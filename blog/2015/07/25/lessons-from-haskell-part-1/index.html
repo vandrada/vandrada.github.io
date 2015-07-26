@@ -1,24 +1,89 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Common Code]]></title>
-  <link href="http://vandrada.github.io/atom.xml" rel="self"/>
-  <link href="http://vandrada.github.io/"/>
-  <updated>2015-07-26T14:13:32-05:00</updated>
-  <id>http://vandrada.github.io/</id>
-  <author>
-    <name><![CDATA[Vincent]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Lessons From Haskell Part 1 - Common Code</title>
+  <meta name="author" content="Vincent">
 
   
-  <entry>
-    <title type="html"><![CDATA[Lessons From Haskell Part 1]]></title>
-    <link href="http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1/"/>
-    <updated>2015-07-25T15:16:28-05:00</updated>
-    <id>http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1</id>
-    <content type="html"><![CDATA[<p>After hearing about Scala (and failing the first time I tried to learn it) I had
+  <meta name="description" content="After hearing about Scala (and failing the first time I tried to learn it) I had
+an interest in functional programming and eventually ending up &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Common Code" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Common Code</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="vandrada.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Lessons From Haskell Part 1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-25T15:16:28-05:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:16 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>After hearing about Scala (and failing the first time I tried to learn it) I had
 an interest in functional programming and eventually ending up learning Haskell
 in my free time. One of the coolest things that I learned from Haskell was lazy
 evaluation.</p>
@@ -177,7 +242,105 @@ lazy by default so a list in Haskell is already a <code>Stream</code>)</p>
 the list remains wrapped in a thunk.</p>
 
 <p>Just don&rsquo;t try to print the whole list!</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-</feed>
+
+<span class="byline author vcard">Posted by <span class="fn">Vincent</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-07-25T15:16:28-05:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:16 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1/" data-via="" data-counturl="http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/25/lessons-from-haskell-part-1/">Lessons From Haskell Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>About Me</h1>
+  <p> I'm Vincent, a recent graduate from <a href="http://www.utsa.edu">UTSA</a>.</p>
+  <p> This blog will be filled with things that I find interesting. At the
+    moment, that's primarily functional programming and looking back at the work
+    I did during my time as a student. </p>
+  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
+      alt="GitHub" height="100" width="100"
+      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Vincent -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
