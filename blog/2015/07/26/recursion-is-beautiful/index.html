@@ -1,24 +1,89 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Common Code]]></title>
-  <link href="http://vandrada.github.io/atom.xml" rel="self"/>
-  <link href="http://vandrada.github.io/"/>
-  <updated>2015-08-03T16:25:55-05:00</updated>
-  <id>http://vandrada.github.io/</id>
-  <author>
-    <name><![CDATA[Vincent]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Recursion Is Beautiful, the Language Might Be Ugly - Common Code</title>
+  <meta name="author" content="Vincent">
 
   
-  <entry>
-    <title type="html"><![CDATA[Recursion Is Beautiful, the Language Might Be Ugly]]></title>
-    <link href="http://vandrada.github.io/blog/2015/07/26/recursion-is-beautiful/"/>
-    <updated>2015-07-26T14:20:48-05:00</updated>
-    <id>http://vandrada.github.io/blog/2015/07/26/recursion-is-beautiful</id>
-    <content type="html"><![CDATA[<h2>Introduction</h2>
+  <meta name="description" content="Introduction For better or for worse, recursion is seen as the weird cousin of loops. It
+solves some problems really well, it&rsquo;s often elegant &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vandrada.github.io/blog/2015/07/26/recursion-is-beautiful/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Common Code" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Common Code</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="vandrada.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Recursion Is Beautiful, the Language Might Be Ugly</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-26T14:20:48-05:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:20 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Introduction</h2>
 
 <p>For better or for worse, recursion is seen as the weird cousin of loops. It
 solves some problems really well, it&rsquo;s often elegant and looks extremely simple,
@@ -646,174 +711,111 @@ and it&rsquo;s strength, it was only after I took the
 that I realized how clear and elegant recursion can be. So before thinking that
 recursion is the problem, think about the language first. It might be the
 language that is ugly and not recursion itself.</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[Lessons From Haskell Part 1]]></title>
-    <link href="http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1/"/>
-    <updated>2015-07-25T15:16:28-05:00</updated>
-    <id>http://vandrada.github.io/blog/2015/07/25/lessons-from-haskell-part-1</id>
-    <content type="html"><![CDATA[<p>After hearing about Scala (and failing the first time I tried to learn it) I had
-an interest in functional programming and eventually ending up learning Haskell
-in my free time. One of the coolest things that I learned from Haskell was lazy
-evaluation.</p>
 
-<p>I know lazy evaluation is sort of  a wedge in the programming community. Some
-people like it, other people feel like it makes understanding the program more
-complicated especially when it comes to memory usage, but it does have some
-perks. I don&rsquo;t want to get into lazy evaluation by default, but rather how
-thunks could be used to decrease memory usage.</p>
+<span class="byline author vcard">Posted by <span class="fn">Vincent</span></span>
 
-<h2>Thunk Basics</h2>
-
-<p>On the surface, thunks are pretty straight-forward. They are nothing more than
-lambdas or anonymous functions that have no parameters. In OCaml an explicit
-thunk can be written like this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">print_endline</span><span class="o">(</span><span class="s2">&quot;hello world&quot;</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
+      
 
 
-<p>This particular function has type <code>unit -&gt; unit</code>, but it&rsquo;s an anonymous
-function that has no formal arguments, so just like that we have a thunk!</p>
-
-<p>So once we have a thunk we can evaluate it by evaluating the underlying
-function and access the actual value.</p>
-
-<figure class='code'><figcaption><span>output from ocaml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">print_endline</span><span class="o">(</span><span class="s2">&quot;Hello world&quot;</span><span class="o">)</span>
-</span><span class='line'><span class="k">in</span> <span class="n">x</span> <span class="bp">()</span><span class="o">;;</span>
-</span><span class='line'><span class="c">(* prints hello world *)</span>
-</span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>x ()</code> supplies the <code>unit</code> needed to apply the thunk and we get access to the
-underlying value, in this case, a function that returns <code>()</code> and prints &ldquo;Hello
-world&rdquo;.</p>
-
-<p>This particular example is pretty boring, but we can use thunks to defer
-expensive computations. For example, let&rsquo;s make a function that sleeps for five
-seconds and then returns a value. Let&rsquo;s pretend that this function is actually
-doing something important in those five seconds like making requests to a server
-or computing the Mandlebrot set.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="nn">UnixThread</span><span class="p">.</span><span class="n">sleep</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">23</span><span class="o">;;</span>
-</span></code></pre></td></tr></table></div></figure>
+<time class='entry-date' datetime='2015-07-26T14:20:48-05:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:20 pm</span></time>
+      
 
 
-<p>This particular thunk now has type <code>unit -&gt; int</code> since it still requires the
-mandatory <code>unit</code> but now it results in an <code>int</code>.  Even though this function
-sleeps for five seconds, the function is created just as fast a regular function
-and we can choose when to evaluate it. Only when it&rsquo;s actually evaluated will
-the call to <code>sleep</code> happen.</p>
-
-<h2>Using Thunks with Large Datasets</h2>
-
-<p>So far we know that thunks are anonymous functions that have no formal
-parameters and they can be used to defer expensive computations, but what kind
-of expensive computations can they defer?</p>
-
-<p>In writing a data-serialization library from MATLAB to
-<a href="https://www.hdfgroup.org/HDF5/">HDF5</a> to Python, Java, C,
-and R, I quickly realized that work should be done to minimize memory usage
-since most of the input files were around 750 MB and some where over a gig. I
-took different approaches in each of the target languages, but for the R
-version, I settled on using explicit thunks to decrease the memory usage. While
-R <em>is</em> a lazy language, I was using S4 objects which are strict in their
-constructor. So if S4 objects are strict, how could thunks be used?</p>
-
-<p>Instead of storing the actual HDF5 objects, which are read in as lists of values
-in R, we can store the names of the HDF5 objects to the datasets and create
-thunks that would <em>eventually</em> evaluate to the actual HDF5 object. For example,
-if we have a HDF5 file with three objects such as</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">+---</span> <span class="o">/</span>
-</span><span class='line'>     <span class="o">+---</span> <span class="n">foo</span>
-</span><span class='line'>     <span class="o">+---</span> <span class="n">bar</span>
-</span><span class='line'>     <span class="o">+---</span> <span class="n">baz</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Instead of storing the actual values for all three HDF5 objects, we can just
-store three thunks and let the user decide what objects they want to read.  Only
-when they are requested is anything actually read. These could then be stored
-in a list.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='r'><span class='line'>data<span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>data<span class="p">[</span><span class="s">&#39;bar&#39;</span><span class="p">]</span>  <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;bar&quot;</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>data<span class="p">[</span><span class="s">&#39;baz&#39;</span><span class="p">]</span>  <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;baz&quot;</span><span class="p">)</span> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And accessing the actual object&ndash;evaluating the thunk&ndash;is as simple as</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='r'><span class='line'>data<span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Since we&rsquo;re not storing the actual objects themselves, but thunks that <em>will</em>
-evaluate to them, we can keep the memory usage down. Instead of storing lists of
-thousands of elements, we just store a simple, humble function.</p>
-
-<p>Writing some pleasant functions to wrap these operations, we can have code that
-looks like this that lazily reads the objects in a HDF5 file.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='R'><span class='line'><span class="c1"># only the thunks are created here</span>
-</span><span class='line'>hd <span class="o">&lt;-</span> Hdf5Structure<span class="p">(</span><span class="s">&quot;file.h5&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># now we evaluate the &quot;foo&quot; object</span>
-</span><span class='line'>foo <span class="o">&lt;-</span> get.entry<span class="p">(</span>hd<span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># do something with test...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this example, only the object <code>foo</code> is read and the other objects in the HDF5
-file remain wrapped in thunks, waiting to be evaluated. To make it sweeter, we
-can also avoid storing <code>NULL</code>s in the list.</p>
-
-<h2>Thunks and Streams</h2>
-
-<p>While this example is pretty simple, the humble thunk can be used to do all
-sorts of cool things. They can be used to create lazy lists or
-<a href="http://www.cs.cornell.edu/courses/cs3110/2011sp/lectures/lec24-streams/streams.htm">Streams</a>
-that let you create potentially infinite lists. Using the idea of streams,
-we can define an infinite list of Fibonacci numbers in Haskell. (Haskell is
-lazy by default so a list in Haskell is already a <code>Stream</code>)</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">fibs</span> <span class="ow">=</span> <span class="mi">0</span> <span class="kt">:</span> <span class="mi">1</span> <span class="kt">:</span> <span class="n">zipWith</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">fibs</span> <span class="p">(</span><span class="n">tail</span> <span class="n">fibs</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And then get the first 10</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take</span> <span class="mi">10</span> <span class="n">fibs</span> <span class="c1">-- [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>After this, only the first 10 ten elements in <code>fibs</code> are evaluated, the rest of
-the list remains wrapped in a thunk.</p>
-
-<p>Just don&rsquo;t try to print the whole list!</p>
-]]></content>
-  </entry>
+    </p>
+    
+      <div class="sharing">
   
-</feed>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://vandrada.github.io/blog/2015/07/26/recursion-is-beautiful/" data-via="" data-counturl="http://vandrada.github.io/blog/2015/07/26/recursion-is-beautiful/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/25/lessons-from-haskell-part-1/" title="Previous Post: Lessons From Haskell Part 1">&laquo; Lessons From Haskell Part 1</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/26/recursion-is-beautiful/">Recursion Is Beautiful, the Language Might Be Ugly</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/25/lessons-from-haskell-part-1/">Lessons From Haskell Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>About Me</h1>
+  <p> I'm Vincent, a recent graduate from <a href="http://www.utsa.edu">UTSA</a>.</p>
+  <p> This blog will be filled with things that I find interesting. At the
+    moment, that's primarily functional programming and looking back at the work
+    I did during my time as a student. </p>
+  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
+      alt="GitHub" height="100" width="100"
+      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Vincent -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
