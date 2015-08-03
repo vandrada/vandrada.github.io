@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Common Code</title>
+  <meta name="author" content="Vincent">
+
+  
+  <meta name="description" content="Introduction For better or for worse, recursion is seen as the weird cousin of loops. It
+solves some problems really well, it&rsquo;s often elegant &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://vandrada.github.io/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Common Code" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Common Code</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="vandrada.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/26/recursion-is-beautiful/">Recursion Is Beautiful, the Language Might Be Ugly</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-26T14:20:48-05:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:20 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Introduction</h2>
+
+<p>For better or for worse, recursion is seen as the weird cousin of loops. It
+solves some problems really well, it&rsquo;s often elegant and looks extremely simple,
+yet for some reason, it doesn&rsquo;t get the attention that it should. I know of
+many people that are out-right scared of recursion, and seeing the lengths some
+people go to code Trees iteratively or use a loop and a stack only shows that
+somewhere along the line, people get a bad idea about recursion. So let&rsquo;s do the
+teen movie treatment and take off recursion&rsquo;s glasses and get rid of the
+ponytail.</p>
+
+<p>Like most other CS students, my first introduction to recursive programming was
+the usual <code>factorial</code> function</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">factorial</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At first it was mind-blowing, but after looking at it I realized it&rsquo;s a pretty
+simple recursive function. Calling <code>factorial(5)</code> reduces to</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">factorial</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+</span><span class='line'>    <span class="mi">5</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+</span><span class='line'>        <span class="mi">5</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+</span><span class='line'>            <span class="mi">5</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'>                <span class="mi">5</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+</span><span class='line'>                    <span class="mi">5</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">1</span> <span class="c1">// we hit the base case, start unwinding</span>
+</span><span class='line'>                <span class="mi">5</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span>
+</span><span class='line'>            <span class="mi">5</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">6</span>
+</span><span class='line'>        <span class="mi">5</span> <span class="o">*</span> <span class="mi">24</span>
+</span><span class='line'>    <span class="mi">120</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>All recursive functions have a base case to stop the recursion and the general
+case that reduces the problem to sub-problems. For <code>factorial</code>, the base case is
+1 and the sub-problem is the factorial <code>n - 1</code>.</p>
+
+<h2>Up Your Recursive Game</h2>
+
+<h3>Lists</h3>
+
+<p>After understanding the <code>factorial</code> function, the next recursive problem that
+came up was recursive data structures, or data structures that are defined in
+terms of themselves. The two most famous being Lists and Trees.</p>
+
+<p>We can define a List as either <code>Nil</code> which represents an empty List, or a <code>Cons</code>
+cell followed by a List. So we can have</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Cons</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">Nil</span><span class="o">))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Which we could picture with ASCII art as</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>
+</span><span class='line'><span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="n">Nil</span>
+</span><span class='line'><span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lists are recursive data structures and their usual definition in Java is
+similar to</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">T</span> <span class="n">elem</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">next</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>While the actual data structure is recursive, I was taught to treat them in an
+iterative manner. Looping through the list to find the last element and adding a
+new element, or looping through the whole structure to print it. Often times,
+the code ending up looking something like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Node</span> <span class="n">temp</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">head</span><span class="o">;</span>
+</span><span class='line'><span class="k">while</span> <span class="o">(</span><span class="n">temp</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="c1">// do something</span>
+</span><span class='line'>    <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Because of this, the recursive nature of Lists wasn&rsquo;t really highlighted and it
+took another data structure to really drive the nature of recursive data
+structures home</p>
+
+<h3>Binary Trees</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Binary_tree">Binary Trees</a> are also recursive
+data structures that are actually treated as such. Similar to other recursive
+data structures, their definition is also simple: a Binary Tree has a root which
+is a node, a node has at most two children, a left child and a right child,
+these children nodes are also binary trees. Here&rsquo;s a simple Binary Tree in
+ASCII art</p>
+
+<pre><code>            4
+        /       \
+       3         5
+    /     \        \
+   1       2        7
+</code></pre>
+
+<p>This particular tree is a Binary Search Tree since each element to the left of a
+node is less than the root and each element to the right is greater than the
+root. In this example, not only is the tree rooted at 4 a Tree, but</p>
+
+<pre><code>        3
+    /       \
+   1         2
+</code></pre>
+
+<p>Is a Tree and so is</p>
+
+<pre><code>    5
+        \
+         7
+</code></pre>
+
+<p>A simple Binary Search Tree could be implemented in Java like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BST</span><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">root</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">BST</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">root</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">(</span><span class="n">T</span> <span class="n">elem</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">elem</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">insert</span><span class="o">(</span><span class="n">elem</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">root</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">(</span><span class="n">T</span> <span class="n">elem</span><span class="o">,</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// the new element is less than this node&#39;s value</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">elem</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">elem</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">left</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">node</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">elem</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">insert</span><span class="o">(</span><span class="n">elem</span><span class="o">,</span> <span class="n">node</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// the new element is greater than this node&#39;s value</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">elem</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">elem</span><span class="o">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">right</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">node</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">elem</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">insert</span><span class="o">(</span><span class="n">elem</span><span class="o">,</span> <span class="n">node</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">class</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">T</span> <span class="n">elem</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">left</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">right</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">public</span> <span class="nf">Node</span><span class="o">(</span><span class="n">T</span> <span class="n">elem</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">elem</span> <span class="o">=</span> <span class="n">elem</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The code is pretty simple, but it&rsquo;s a bit verbose. A <code>Node</code> has an element and
+two children, <code>left</code> and <code>right</code>, and a <code>BST</code> has a <code>Node</code> as a root. Inserting
+an element into a <code>BST</code> first checks if the root is <code>null</code> or if the Tree is
+empty, if it is, we create a new node and this node becomes the root. If the
+root isn&rsquo;t <code>null</code>, we have to check if the element to be added is less than or
+greater than the root&rsquo;s element and insert it to the correct side accordingly.</p>
+
+<p>Binary Search Trees made recursion really click for me, but I had one assignment
+that studied two separate implementations of trees, one recursive and another
+with arrays. The recursive implementation always blew the stack and the one with
+the array ran out of space since most of the array is not used, leaving the
+impression that recursion simply isn&rsquo;t a viable alternative. So aside from some
+special algorithms that would be a mess if they were written iteratively, I
+almost never used recursion in my day-to-day programming. Instead I stuck to
+loops and thought of recursion as a cool&ndash;if a but murky&ndash;concept, but
+ultimately one that was ineffective.</p>
+
+<h2>Embracing Recursion</h2>
+
+<p>While he was teaching us recursion, my professor made a particular remark that
+stayed with me. He said something along the lines of, &ldquo;It&rsquo;s hard to think in
+terms of recursion unless you program in Lisp&hellip;those people could do anything
+with recursion.&rdquo; I looked up Lisp because I really wanted to understand
+recursion and saw all the parens and quickly gave up on learning anything that
+resembled Lisp. But it left me wondering why Lisp programmers would be better at
+recursion than other programmers.</p>
+
+<p>Fast-forward a year or so and there I was learning Haskell, frustrated that it
+didn&rsquo;t have loops and thinking how anyone could get anything done with it. I
+knew of <code>map</code>, <code>filter</code>, and <code>fold</code>, but thought they were novelties and that
+it would be difficult to think in terms of only those three functions. When
+recursion came up, I remembered the few times I used it in class and felt uneasy
+using <em>only</em> recursion.</p>
+
+<p>After seeing code for Trees in Haskell that was similar to this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="kr">data</span> <span class="kt">Tree</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Node</span> <span class="n">a</span> <span class="p">(</span><span class="kt">Tree</span> <span class="n">a</span><span class="p">)</span> <span class="p">(</span><span class="kt">Tree</span> <span class="n">a</span><span class="p">)</span> <span class="o">|</span> <span class="kt">Empty</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">insert</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Ord</span> <span class="n">a</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Tree</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Tree</span> <span class="n">a</span>
+</span><span class='line'><span class="nf">insert</span> <span class="kt">Empty</span> <span class="n">elem</span> <span class="ow">=</span> <span class="kt">Node</span> <span class="n">elem</span> <span class="kt">Empty</span> <span class="kt">Empty</span>
+</span><span class='line'><span class="nf">insert</span> <span class="p">(</span><span class="kt">Node</span> <span class="n">x</span> <span class="n">left</span> <span class="n">right</span><span class="p">)</span> <span class="n">elem</span>
+</span><span class='line'>    <span class="o">|</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">elem</span> <span class="ow">=</span> <span class="kt">Node</span> <span class="n">x</span> <span class="p">(</span><span class="n">insert</span> <span class="n">left</span> <span class="n">elem</span><span class="p">)</span> <span class="n">right</span>
+</span><span class='line'>    <span class="o">|</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">elem</span> <span class="ow">=</span> <span class="kt">Node</span> <span class="n">x</span> <span class="n">left</span> <span class="p">(</span><span class="n">insert</span> <span class="n">right</span> <span class="n">elem</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I was blown away by how clear it was. First, the defintion of a <code>Tree</code> is
+exactly what it is. We don&rsquo;t have to create two separate classes, instead we
+just create an ADT and say that a Tree is either a <code>Node</code> with an element and
+two other <code>Trees</code> or it&rsquo;s <code>Empty</code>. Nothing more and nothing less. The function
+to insert an element is equally concise, if the <code>Tree</code> is <code>Empty</code> we create a
+new <code>Node</code> and if the <code>Tree</code> is a <code>Node</code> we either add it to the left or to the
+right.</p>
+
+<p>Seeing this function got me rethinking recursion and it made me realize that
+recursion <em>is</em> a valid tool in the programmer&rsquo;s toolbox, it&rsquo;s just that in most
+languages recursion is an after-thought that often leads to the stack being
+blown.</p>
+
+<p>I still shudder when I see iterative code to manipulate Trees.</p>
+
+<h2>The Language Might Be Ugly</h2>
+
+<h3>Tail Call Optimization</h3>
+
+<p>So if recursion is a valid tool, why isn&rsquo;t it used more? I know one of the main
+reasons that I avoid recursion because of the stack.</p>
+
+<p>Let&rsquo;s take the familiar factorial function. In Java, we could write</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">int</span> <span class="nf">factorial</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But we&rsquo;re limited to a certain <code>n</code> since the stack will eventually run out of
+space. For the factorial function, the stack space that is required is linear
+to <code>n</code>. Since we have to maintain the previous calls in order to complete the
+function, the stack continues to grow and grow until BAM! the stack is blown. In
+Java you get a <code>StackOverflowError</code>, in C you get a <code>SIGSEGV</code> error (at least on
+OS X) and in Python you get a nice <code>RuntimeError: maximum recursion depth error</code>
+message. However in a language that embraces recursion, what could we do?</p>
+
+<p>In Scala we could translate the code directly and write</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">def</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But we&rsquo;re limited by the same thing. Since Scala is a JVM language it&rsquo;s bounded
+by stack space as well, but unlike Java, Scala has support for
+<a href="http://stackoverflow.com/questions/310974/what-is-tail-call-optimization">tail-call optimization</a>
+so instead of simply translating the Java code, we could re-write
+it to take advantage of tail-call optimization.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">def</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">def</span> <span class="n">loop</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">acc</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="n">acc</span> <span class="k">else</span> <span class="n">loop</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">acc</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">loop</span><span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This version of factorial <em>is</em> tail-recursive. So it uses constant stack space.
+Instead of the factorial function evaluating like it did in the example at the
+beginning of this article, it now evaluates like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">factorial</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">loop</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">20</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">60</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span> <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">120</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="mi">120</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead of <code>loop</code> building on the stack, the previous call can be replaced since
+the variables from the previous call don&rsquo;t have to be maintained. Tail call
+optimization can transform recursive functions to tight <code>while</code> loops that don&rsquo;t
+require extra space and since it&rsquo;s just a loop, there&rsquo;s no need for the
+&lsquo;unwinding&rsquo; that usually accompanies recursive functions. Scala also supports
+the
+<a href="http://www.scala-lang.org/api/current/index.html#scala.annotation.tailrec">@tailrec</a>
+annotation enabling the compiler to verify that the function is
+indeed tail recursive. If it&rsquo;s not, the compiler will issue an error before you
+even have the chance to blow the stack with what you thought was a
+tail-recursive function.</p>
+
+<h4>An Example</h4>
+
+<p>Let&rsquo;s compare the difference that tail-call optimization makes by comparing two
+programs. They both compute the factorial of a number.</p>
+
+<p>The first one is in Java, and here&rsquo;s the code</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">import</span> <span class="nn">java.math.BigInteger</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">factorialIter</span><span class="o">(</span><span class="mi">17000</span><span class="o">).</span><span class="na">toString</span><span class="o">().</span><span class="na">length</span><span class="o">());</span>
+</span><span class='line'>        <span class="c1">// the stack is blown here</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">factorial</span><span class="o">(</span><span class="mi">17000</span><span class="o">).</span><span class="na">toString</span><span class="o">().</span><span class="na">length</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">factorial</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">n</span><span class="o">).</span><span class="na">multiply</span><span class="o">(</span><span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">));</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">factorialIter</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">BigInteger</span> <span class="n">res</span> <span class="o">=</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="na">multiply</span><span class="o">(</span><span class="n">BigInteger</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">res</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>factorial</code> blows the stack when trying to compute <code>17000!</code> while
+<code>factorialIter</code> does just fine. The result is huge, being a number with 64,538
+digits.</p>
+
+<p>The second is in Scala</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="k">import</span> <span class="nn">scala.annotation.tailrec</span>
+</span><span class='line'><span class="k">import</span> <span class="nn">scala.math.BigInt</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">BigInt</span><span class="o">)</span><span class="k">:</span> <span class="kt">BigInt</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nd">@tailrec</span>
+</span><span class='line'>  <span class="k">def</span> <span class="n">loop</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">BigInt</span><span class="o">,</span> <span class="n">acc</span><span class="k">:</span> <span class="kt">BigInt</span><span class="o">)</span><span class="k">:</span> <span class="kt">BigInt</span> <span class="o">=</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="n">acc</span> <span class="k">else</span> <span class="n">loop</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">acc</span><span class="o">)</span>
+</span><span class='line'>  <span class="n">loop</span><span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">println</span><span class="o">(</span><span class="n">factorial</span><span class="o">(</span><span class="mi">17000</span><span class="o">).</span><span class="n">toString</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This version happily computes <code>17000!</code> so let&rsquo;s try to push it a little bit.</p>
+
+<p>Calling <code>factorial(100000)</code> says that the resulting number has 45,654 digits.</p>
+
+<p><code>factorial(200000)</code> results in a number with 973,351 digits.</p>
+
+<p>And finally, <code>factorial(1000000)</code> results in a number with 5,565,709 digits.
+After <strong>some</strong> time of course.</p>
+
+<p>Tail-call optimization is the most important thing that a language could offer
+to make using recursive functions more pleasant. The second most important
+thing?</p>
+
+<h3>Syntax</h3>
+
+<p>I know syntax isn&rsquo;t the most important thing to consider when deciding what
+language to use, but it definitely plays a role. As an example, consider the
+difference between the Java and the Haskell implementation for Trees. They both
+accomplish the <em>same</em> thing: construction and insertion, but the Java version is
+easily five times longer. But this isn&rsquo;t necessary a problem with Java, rather
+it&rsquo;s a positive of Haskell.</p>
+
+<p>Haskell and other functional languages are simply built with recursion in mind.
+Combined with ADTs where you could much more easily express recursive structures
+and the ability to define inner functions, writing recursive functions in these
+languages is simply easier and cleaner. In Java you have to pollute the
+namespace with &ldquo;helper&rdquo; functions, while in a functional language you can simply
+define the &ldquo;helper&rdquo; function as an inner function or avoid it all together.
+Theoretically, <em>if</em> Java supported tail-call optimization, the factorial
+function would be something similar to this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">public</span> <span class="nc">BigInteger</span> <span class="n">factorial</span><span class="o">(</span><span class="n">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="nc">BigInteger</span> <span class="n">factorial</span><span class="o">(</span><span class="n">int</span> <span class="n">n</span><span class="o">,</span> <span class="nc">BigInteger</span> <span class="n">acc</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">acc</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">acc</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The problem with this is that the private <code>factorial</code> function will <strong>never</strong> be
+used outside of the public <code>factorial</code>, yet there it is, at the top-level,
+available for other functions in the same file to call erroneously.</p>
+
+<p>Finally Algebraic Data Types similarly make recursive code cleaner because it
+lets you define recursive data structures cleaner. Classes in Java or Python are
+sometimes too clunky to use when all you need is a simple representation.
+Consider the definition of a Tree</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">data</span> <span class="nc">Tree</span> <span class="n">a</span> <span class="k">=</span> <span class="nc">Node</span> <span class="n">a</span> <span class="o">(</span><span class="nc">Tree</span> <span class="n">a</span><span class="o">)</span> <span class="o">(</span><span class="nc">Tree</span> <span class="n">a</span><span class="o">)</span> <span class="o">|</span> <span class="nc">Empty</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It captures the nature of a Tree without overwhelming you with extraneous
+methods or clunky getters and setters. ADTs aren&rsquo;t the answer all the time, but
+being able to reach for them when a class will simply be heavy-handed is
+helpful.</p>
+
+<h2>Conclusion</h2>
+
+<p>Recursion has a bad name for a lot of programmers, often being seen as not
+practical or too expensive to actually use, but the truth is that recursion is a
+great tool to have in your toolbox. It&rsquo;s not a panacea and it&rsquo;s not always
+better than a loop, but some functions are naturally recursive so writing these
+functions iteratively would not only be messy but also a much greater task.
+Loops are fine for indexing into an array, but if you have a recursive data
+structure such as a List, iterating through the List using recursion makes a lot
+more sense.</p>
+
+<p>To transform an array, this makes sense</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">array</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">*</span> <span class="mi">2</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But with a List, this makes more sense</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="n">b</span><span class="p">]</span>
+</span><span class='line'><span class="nf">map</span> <span class="n">f</span> <span class="kt">[]</span> <span class="ow">=</span> <span class="kt">[]</span>
+</span><span class='line'><span class="nf">map</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map</span> <span class="n">xs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The way you approach a data structure should be defined by it&rsquo;s nature. You
+shouldn&rsquo;t try to approach a tree iteratively just like you shouldn&rsquo;t try to
+index into a list and treat it like an array. The problem with this is that the
+more common languages don&rsquo;t have good support for recursion so a lot of
+programmers could be left thinking that recursion is more-or-less a novelty.</p>
+
+<p>I didn&rsquo;t appreciate recursion until I had no choice but to actually use it.
+After actually using it, I started to appreciate recursion for it&rsquo;s simplicity
+and it&rsquo;s strength, it was only after I took the
+<a href="https://www.cs.berkeley.edu/~bh/pdf/v1ch08.pdf">leap of faith</a>
+that I realized how clear and elegant recursion can be. So before thinking that
+recursion is the problem, think about the language first. It might be the
+language that is ugly and not recursion itself.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/07/25/lessons-from-haskell-part-1/">Lessons From Haskell Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-25T15:16:28-05:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:16 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>After hearing about Scala (and failing the first time I tried to learn it) I had
+an interest in functional programming and eventually ending up learning Haskell
+in my free time. One of the coolest things that I learned from Haskell was lazy
+evaluation.</p>
+
+<p>I know lazy evaluation is sort of  a wedge in the programming community. Some
+people like it, other people feel like it makes understanding the program more
+complicated especially when it comes to memory usage, but it does have some
+perks. I don&rsquo;t want to get into lazy evaluation by default, but rather how
+thunks could be used to decrease memory usage.</p>
+
+<h2>Thunk Basics</h2>
+
+<p>On the surface, thunks are pretty straight-forward. They are nothing more than
+lambdas or anonymous functions that have no parameters. In OCaml an explicit
+thunk can be written like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">print_endline</span><span class="o">(</span><span class="s2">&quot;hello world&quot;</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This particular function has type <code>unit -&gt; unit</code>, but it&rsquo;s an anonymous
+function that has no formal arguments, so just like that we have a thunk!</p>
+
+<p>So once we have a thunk we can evaluate it by evaluating the underlying
+function and access the actual value.</p>
+
+<figure class='code'><figcaption><span>output from ocaml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">print_endline</span><span class="o">(</span><span class="s2">&quot;Hello world&quot;</span><span class="o">)</span>
+</span><span class='line'><span class="k">in</span> <span class="n">x</span> <span class="bp">()</span><span class="o">;;</span>
+</span><span class='line'><span class="c">(* prints hello world *)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>x ()</code> supplies the <code>unit</code> needed to apply the thunk and we get access to the
+underlying value, in this case, a function that returns <code>()</code> and prints &ldquo;Hello
+world&rdquo;.</p>
+
+<p>This particular example is pretty boring, but we can use thunks to defer
+expensive computations. For example, let&rsquo;s make a function that sleeps for five
+seconds and then returns a value. Let&rsquo;s pretend that this function is actually
+doing something important in those five seconds like making requests to a server
+or computing the Mandlebrot set.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="nn">UnixThread</span><span class="p">.</span><span class="n">sleep</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">23</span><span class="o">;;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This particular thunk now has type <code>unit -&gt; int</code> since it still requires the
+mandatory <code>unit</code> but now it results in an <code>int</code>.  Even though this function
+sleeps for five seconds, the function is created just as fast a regular function
+and we can choose when to evaluate it. Only when it&rsquo;s actually evaluated will
+the call to <code>sleep</code> happen.</p>
+
+<h2>Using Thunks with Large Datasets</h2>
+
+<p>So far we know that thunks are anonymous functions that have no formal
+parameters and they can be used to defer expensive computations, but what kind
+of expensive computations can they defer?</p>
+
+<p>In writing a data-serialization library from MATLAB to
+<a href="https://www.hdfgroup.org/HDF5/">HDF5</a> to Python, Java, C,
+and R, I quickly realized that work should be done to minimize memory usage
+since most of the input files were around 750 MB and some where over a gig. I
+took different approaches in each of the target languages, but for the R
+version, I settled on using explicit thunks to decrease the memory usage. While
+R <em>is</em> a lazy language, I was using S4 objects which are strict in their
+constructor. So if S4 objects are strict, how could thunks be used?</p>
+
+<p>Instead of storing the actual HDF5 objects, which are read in as lists of values
+in R, we can store the names of the HDF5 objects to the datasets and create
+thunks that would <em>eventually</em> evaluate to the actual HDF5 object. For example,
+if we have a HDF5 file with three objects such as</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">+---</span> <span class="o">/</span>
+</span><span class='line'>     <span class="o">+---</span> <span class="n">foo</span>
+</span><span class='line'>     <span class="o">+---</span> <span class="n">bar</span>
+</span><span class='line'>     <span class="o">+---</span> <span class="n">baz</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead of storing the actual values for all three HDF5 objects, we can just
+store three thunks and let the user decide what objects they want to read.  Only
+when they are requested is anything actually read. These could then be stored
+in a list.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='r'><span class='line'>data<span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>data<span class="p">[</span><span class="s">&#39;bar&#39;</span><span class="p">]</span>  <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;bar&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>data<span class="p">[</span><span class="s">&#39;baz&#39;</span><span class="p">]</span>  <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;baz&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And accessing the actual object&ndash;evaluating the thunk&ndash;is as simple as</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='r'><span class='line'>data<span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since we&rsquo;re not storing the actual objects themselves, but thunks that <em>will</em>
+evaluate to them, we can keep the memory usage down. Instead of storing lists of
+thousands of elements, we just store a simple, humble function.</p>
+
+<p>Writing some pleasant functions to wrap these operations, we can have code that
+looks like this that lazily reads the objects in a HDF5 file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='R'><span class='line'><span class="c1"># only the thunks are created here</span>
+</span><span class='line'>hd <span class="o">&lt;-</span> Hdf5Structure<span class="p">(</span><span class="s">&quot;file.h5&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># now we evaluate the &quot;foo&quot; object</span>
+</span><span class='line'>foo <span class="o">&lt;-</span> get.entry<span class="p">(</span>hd<span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># do something with test...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this example, only the object <code>foo</code> is read and the other objects in the HDF5
+file remain wrapped in thunks, waiting to be evaluated. To make it sweeter, we
+can also avoid storing <code>NULL</code>s in the list.</p>
+
+<h2>Thunks and Streams</h2>
+
+<p>While this example is pretty simple, the humble thunk can be used to do all
+sorts of cool things. They can be used to create lazy lists or
+<a href="http://www.cs.cornell.edu/courses/cs3110/2011sp/lectures/lec24-streams/streams.htm">Streams</a>
+that let you create potentially infinite lists. Using the idea of streams,
+we can define an infinite list of Fibonacci numbers in Haskell. (Haskell is
+lazy by default so a list in Haskell is already a <code>Stream</code>)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">fibs</span> <span class="ow">=</span> <span class="mi">0</span> <span class="kt">:</span> <span class="mi">1</span> <span class="kt">:</span> <span class="n">zipWith</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">fibs</span> <span class="p">(</span><span class="n">tail</span> <span class="n">fibs</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then get the first 10</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take</span> <span class="mi">10</span> <span class="n">fibs</span> <span class="c1">-- [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this, only the first 10 ten elements in <code>fibs</code> are evaluated, the rest of
+the list remains wrapped in a thunk.</p>
+
+<p>Just don&rsquo;t try to print the whole list!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/26/recursion-is-beautiful/">Recursion Is Beautiful, the Language Might Be Ugly</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/25/lessons-from-haskell-part-1/">Lessons From Haskell Part 1</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>About Me</h1>
+  <p> I'm Vincent, a recent graduate from <a href="http://www.utsa.edu">UTSA</a>.</p>
+  <p> This blog will be filled with things that I find interesting. At the
+    moment, that's primarily functional programming and looking back at the work
+    I did during my time as a student. </p>
+  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
+      alt="GitHub" height="100" width="100"
+      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
+</section>
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Vincent -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
