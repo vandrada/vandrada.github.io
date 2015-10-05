@@ -248,7 +248,7 @@ I still shudder when I see iterative code to manipulate Trees.
 ### Tail Call Optimization
 
 So if recursion is a valid tool, why isn't it used more? I know one of the main
-reasons that I avoid recursion because of the stack.
+reasons that I avoid recursion is because of the stack.
 
 Let's take the familiar factorial function. In Java, we could write
 
