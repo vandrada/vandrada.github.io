@@ -4,7 +4,7 @@
   <title><![CDATA[Common Code]]></title>
   <link href="http://vandrada.github.io/atom.xml" rel="self"/>
   <link href="http://vandrada.github.io/"/>
-  <updated>2015-10-05T11:28:59-05:00</updated>
+  <updated>2015-10-05T14:53:56-05:00</updated>
   <id>http://vandrada.github.io/</id>
   <author>
     <name><![CDATA[Vincent]]></name>
@@ -896,7 +896,7 @@ blown.</p>
 <h3>Tail Call Optimization</h3>
 
 <p>So if recursion is a valid tool, why isn&rsquo;t it used more? I know one of the main
-reasons that I avoid recursion because of the stack.</p>
+reasons that I avoid recursion is because of the stack.</p>
 
 <p>Let&rsquo;s take the familiar factorial function. In Java, we could write</p>
 
