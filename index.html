@@ -154,8 +154,8 @@ are faster.</p>
 doesn&#39;t have a standard so the bytecode produced by different versions my very
 well be different</em></p>
 
-<p>We can use the awesome <code>dis</code> module to get the bytecode so let&#39;s write a simple
-function that builds up the list and returns it</p>
+<p>We can use the awesome <a href="https://docs.python.org/2/library/dis.html">dis</a> module
+to get the bytecode so let&#39;s write a simple function that builds up the list and returns it</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -363,7 +363,7 @@ the iterator, we were able to begin getting elements from it and multiplying
 them by two and storing them in the list that would eventually be returned. Once
 the iterator is empty, all we do is return the list and we&#39;re done.</p>
 
-<h2>Dissection the Bytecode for the For Loop</h2>
+<h2>Dissecting the Bytecode for For Loops</h2>
 
 <p>Similar to what we did with the list comprehension, let&#39;s write an equivalent
 function but use the <code>for ... in</code> construct instead</p>
@@ -448,7 +448,7 @@ go through it step-by-step.</p>
 
 <ul>
 <li><code>STORE_FAST</code> stores the value at the top of the stack at <code>co_varnames[0]</code>, in
-this case it&#39;s named xs</li>
+this case it&#39;s named <code>xs</code></li>
 </ul>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -634,11 +634,12 @@ list: using <code>map</code></p>
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;map(lambda x: x * 2, range(0, 100))&quot;</span>
-</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">22.9</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">23.9</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
 </span></code></pre></td></tr></table></div></figure>
 
-<p>Ok, so using map takes longer than the list comprehension <em>and</em> the for loop
-version, let&#39;s get the bytecode and see what happens behind the scenes</p>
+<p>Ok, so using <code>map</code> takes longer than the list comprehension and is roughly
+equivalent to the for loop version, let&#39;s get the bytecode and see what
+happens behind the scenes</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2095,7 +2096,7 @@ the list remains wrapped in a thunk.</p>
         github.showRepos({
             user: 'vandrada',
             count: 0,
-            skip_forks: true,
+            skip_forks: false,
             target: '#gh_repos'
         });
     });
