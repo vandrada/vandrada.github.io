@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="Introduction For better or for worse, recursion is seen as the weird cousin of loops. It
-solves some problems really well, it&rsquo;s often elegant &hellip;">
+solves some problems really well, it&#39;s often elegant and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -86,12 +86,12 @@ solves some problems really well, it&rsquo;s often elegant &hellip;">
 <div class="entry-content"><h2>Introduction</h2>
 
 <p>For better or for worse, recursion is seen as the weird cousin of loops. It
-solves some problems really well, it&rsquo;s often elegant and looks extremely simple,
-yet for some reason, it doesn&rsquo;t get the attention that it should. I know of
+solves some problems really well, it&#39;s often elegant and looks extremely simple,
+yet for some reason, it doesn&#39;t get the attention that it should. I know of
 many people that are out-right scared of recursion, and seeing the lengths some
 people go to code Trees iteratively or use a loop and a stack only shows that
-somewhere along the line, people get a bad idea about recursion. So let&rsquo;s do the
-teen movie treatment and take off recursion&rsquo;s glasses and get rid of the
+somewhere along the line, people get a bad idea about recursion. So let&#39;s do the
+teen movie treatment and take off recursion&#39;s glasses and get rid of the
 ponytail.</p>
 
 <p>Like most other CS students, my first introduction to recursive programming was
@@ -111,8 +111,7 @@ the usual <code>factorial</code> function</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>At first it was mind-blowing, but after looking at it I realized it&rsquo;s a pretty
+<p>At first it was mind-blowing, but after looking at it I realized it&#39;s a pretty
 simple recursive function. Calling <code>factorial(5)</code> reduces to</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -137,7 +136,6 @@ simple recursive function. Calling <code>factorial(5)</code> reduces to</p>
 </span><span class='line'>    <span class="mi">120</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>All recursive functions have a base case to stop the recursion and the general
 case that reduces the problem to sub-problems. For <code>factorial</code>, the base case is
 1 and the sub-problem is the factorial <code>n - 1</code>.</p>
@@ -157,7 +155,6 @@ cell followed by a List. So we can have</p>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Cons</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">Nil</span><span class="o">))))</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Which we could picture with ASCII art as</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -167,7 +164,6 @@ cell followed by a List. So we can have</p>
 </span><span class='line'><span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="n">Nil</span>
 </span><span class='line'><span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>
 </span></code></pre></td></tr></table></div></figure>
-
 
 <p>Lists are recursive data structures and their usual definition in Java is
 similar to</p>
@@ -186,7 +182,6 @@ similar to</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>While the actual data structure is recursive, I was taught to treat them in an
 iterative manner. Looping through the list to find the last element and adding a
 new element, or looping through the whole structure to print it. Often times,
@@ -204,8 +199,7 @@ the code ending up looking something like this</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>Because of this, the recursive nature of Lists wasn&rsquo;t really highlighted and it
+<p>Because of this, the recursive nature of Lists wasn&#39;t really highlighted and it
 took another data structure to really drive the nature of recursive data
 structures home</p>
 
@@ -215,32 +209,26 @@ structures home</p>
 data structures that are actually treated as such. Similar to other recursive
 data structures, their definition is also simple: a Binary Tree has a root which
 is a node, a node has at most two children, a left child and a right child,
-these children nodes are also binary trees. Here&rsquo;s a simple Binary Tree in
+these children nodes are also binary trees. Here&#39;s a simple Binary Tree in
 ASCII art</p>
-
-<pre><code>            4
+<div class="highlight"><pre><code class="language-text" data-lang="text">            4
         /       \
        3         5
     /     \        \
    1       2        7
-</code></pre>
-
+</code></pre></div>
 <p>This particular tree is a Binary Search Tree since each element to the left of a
 node is less than the root and each element to the right is greater than the
 root. In this example, not only is the tree rooted at 4 a Tree, but</p>
-
-<pre><code>        3
+<div class="highlight"><pre><code class="language-text" data-lang="text">        3
     /       \
    1         2
-</code></pre>
-
+</code></pre></div>
 <p>Is a Tree and so is</p>
-
-<pre><code>    5
+<div class="highlight"><pre><code class="language-text" data-lang="text">    5
         \
          7
-</code></pre>
-
+</code></pre></div>
 <p>A simple Binary Search Tree could be implemented in Java like this</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -339,36 +327,35 @@ root. In this example, not only is the tree rooted at 4 a Tree, but</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>The code is pretty simple, but it&rsquo;s a bit verbose. A <code>Node</code> has an element and
+<p>The code is pretty simple, but it&#39;s a bit verbose. A <code>Node</code> has an element and
 two children, <code>left</code> and <code>right</code>, and a <code>BST</code> has a <code>Node</code> as a root. Inserting
 an element into a <code>BST</code> first checks if the root is <code>null</code> or if the Tree is
 empty, if it is, we create a new node and this node becomes the root. If the
-root isn&rsquo;t <code>null</code>, we have to check if the element to be added is less than or
-greater than the root&rsquo;s element and insert it to the correct side accordingly.</p>
+root isn&#39;t <code>null</code>, we have to check if the element to be added is less than or
+greater than the root&#39;s element and insert it to the correct side accordingly.</p>
 
 <p>Binary Search Trees made recursion really click for me, but I had one assignment
 that studied two separate implementations of trees, one recursive and another
 with arrays. The recursive implementation always blew the stack and the one with
 the array ran out of space since most of the array is not used, leaving the
-impression that recursion simply isn&rsquo;t a viable alternative. So aside from some
+impression that recursion simply isn&#39;t a viable alternative. So aside from some
 special algorithms that would be a mess if they were written iteratively, I
 almost never used recursion in my day-to-day programming. Instead I stuck to
-loops and thought of recursion as a cool&ndash;if a but murky&ndash;concept, but
+loops and thought of recursion as a cool--if a but murky--concept, but
 ultimately one that was ineffective.</p>
 
 <h2>Embracing Recursion</h2>
 
 <p>While he was teaching us recursion, my professor made a particular remark that
-stayed with me. He said something along the lines of, &ldquo;It&rsquo;s hard to think in
-terms of recursion unless you program in Lisp&hellip;those people could do anything
-with recursion.&rdquo; I looked up Lisp because I really wanted to understand
+stayed with me. He said something along the lines of, &quot;It&#39;s hard to think in
+terms of recursion unless you program in Lisp...those people could do anything
+with recursion.&quot; I looked up Lisp because I really wanted to understand
 recursion and saw all the parens and quickly gave up on learning anything that
 resembled Lisp. But it left me wondering why Lisp programmers would be better at
 recursion than other programmers.</p>
 
 <p>Fast-forward a year or so and there I was learning Haskell, frustrated that it
-didn&rsquo;t have loops and thinking how anyone could get anything done with it. I
+didn&#39;t have loops and thinking how anyone could get anything done with it. I
 knew of <code>map</code>, <code>filter</code>, and <code>fold</code>, but thought they were novelties and that
 it would be difficult to think in terms of only those three functions. When
 recursion came up, I remembered the few times I used it in class and felt uneasy
@@ -392,17 +379,16 @@ using <em>only</em> recursion.</p>
 </span><span class='line'>    <span class="o">|</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">elem</span> <span class="ow">=</span> <span class="kt">Node</span> <span class="n">x</span> <span class="n">left</span> <span class="p">(</span><span class="n">insert</span> <span class="n">right</span> <span class="n">elem</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>I was blown away by how clear it was. First, the defintion of a <code>Tree</code> is
-exactly what it is. We don&rsquo;t have to create two separate classes, instead we
+exactly what it is. We don&#39;t have to create two separate classes, instead we
 just create an ADT and say that a Tree is either a <code>Node</code> with an element and
-two other <code>Trees</code> or it&rsquo;s <code>Empty</code>. Nothing more and nothing less. The function
+two other <code>Trees</code> or it&#39;s <code>Empty</code>. Nothing more and nothing less. The function
 to insert an element is equally concise, if the <code>Tree</code> is <code>Empty</code> we create a
 new <code>Node</code> and if the <code>Tree</code> is a <code>Node</code> we either add it to the left or to the
 right.</p>
 
 <p>Seeing this function got me rethinking recursion and it made me realize that
-recursion <em>is</em> a valid tool in the programmer&rsquo;s toolbox, it&rsquo;s just that in most
+recursion <em>is</em> a valid tool in the programmer&#39;s toolbox, it&#39;s just that in most
 languages recursion is an after-thought that often leads to the stack being
 blown.</p>
 
@@ -412,10 +398,10 @@ blown.</p>
 
 <h3>Tail Call Optimization</h3>
 
-<p>So if recursion is a valid tool, why isn&rsquo;t it used more? I know one of the main
+<p>So if recursion is a valid tool, why isn&#39;t it used more? I know one of the main
 reasons that I avoid recursion is because of the stack.</p>
 
-<p>Let&rsquo;s take the familiar factorial function. In Java, we could write</p>
+<p>Let&#39;s take the familiar factorial function. In Java, we could write</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -431,8 +417,7 @@ reasons that I avoid recursion is because of the stack.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>But we&rsquo;re limited to a certain <code>n</code> since the stack will eventually run out of
+<p>But we&#39;re limited to a certain <code>n</code> since the stack will eventually run out of
 space. For the factorial function, the stack space that is required is linear
 to <code>n</code>. Since we have to maintain the previous calls in order to complete the
 function, the stack continues to grow and grow until BAM! the stack is blown. In
@@ -448,8 +433,7 @@ message. However in a language that embraces recursion, what could we do?</p>
 </span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>But we&rsquo;re limited by the same thing. Since Scala is a JVM language it&rsquo;s bounded
+<p>But we&#39;re limited by the same thing. Since Scala is a JVM language it&#39;s bounded
 by stack space as well, but unlike Java, Scala has support for
 <a href="http://stackoverflow.com/questions/310974/what-is-tail-call-optimization">tail-call optimization</a>
 so instead of simply translating the Java code, we could re-write
@@ -469,7 +453,6 @@ it to take advantage of tail-call optimization.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>This version of factorial <em>is</em> tail-recursive. So it uses constant stack space.
 Instead of the factorial function evaluating like it did in the example at the
 beginning of this article, it now evaluates like this</p>
@@ -480,25 +463,24 @@ beginning of this article, it now evaluates like this</p>
 </span><span class='line'>    <span class="n">loop</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">20</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">60</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span> <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">120</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="mi">120</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Instead of <code>loop</code> building on the stack, the previous call can be replaced since
-the variables from the previous call don&rsquo;t have to be maintained. Tail call
-optimization can transform recursive functions to tight <code>while</code> loops that don&rsquo;t
-require extra space and since it&rsquo;s just a loop, there&rsquo;s no need for the
-&lsquo;unwinding&rsquo; that usually accompanies recursive functions. Scala also supports
+the variables from the previous call don&#39;t have to be maintained. Tail call
+optimization can transform recursive functions to tight <code>while</code> loops that don&#39;t
+require extra space and since it&#39;s just a loop, there&#39;s no need for the
+&#39;unwinding&#39; that usually accompanies recursive functions. Scala also supports
 the
 <a href="http://www.scala-lang.org/api/current/index.html#scala.annotation.tailrec">@tailrec</a>
 annotation enabling the compiler to verify that the function is
-indeed tail recursive. If it&rsquo;s not, the compiler will issue an error before you
+indeed tail recursive. If it&#39;s not, the compiler will issue an error before you
 even have the chance to blow the stack with what you thought was a
 tail-recursive function.</p>
 
 <h4>An Example</h4>
 
-<p>Let&rsquo;s compare the difference that tail-call optimization makes by comparing two
+<p>Let&#39;s compare the difference that tail-call optimization makes by comparing two
 programs. They both compute the factorial of a number.</p>
 
-<p>The first one is in Java, and here&rsquo;s the code</p>
+<p>The first one is in Java, and here&#39;s the code</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -558,7 +540,6 @@ programs. They both compute the factorial of a number.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p><code>factorial</code> blows the stack when trying to compute <code>17000!</code> while
 <code>factorialIter</code> does just fine. The result is huge, being a number with 64,538
 digits.</p>
@@ -589,8 +570,7 @@ digits.</p>
 </span><span class='line'><span class="n">println</span><span class="o">(</span><span class="n">factorial</span><span class="o">(</span><span class="mi">17000</span><span class="o">).</span><span class="n">toString</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>This version happily computes <code>17000!</code> so let&rsquo;s try to push it a little bit.</p>
+<p>This version happily computes <code>17000!</code> so let&#39;s try to push it a little bit.</p>
 
 <p>Calling <code>factorial(100000)</code> says that the resulting number has 45,654 digits.</p>
 
@@ -605,19 +585,19 @@ thing?</p>
 
 <h3>Syntax</h3>
 
-<p>I know syntax isn&rsquo;t the most important thing to consider when deciding what
+<p>I know syntax isn&#39;t the most important thing to consider when deciding what
 language to use, but it definitely plays a role. As an example, consider the
 difference between the Java and the Haskell implementation for Trees. They both
 accomplish the <em>same</em> thing: construction and insertion, but the Java version is
-easily five times longer. But this isn&rsquo;t necessary a problem with Java, rather
-it&rsquo;s a positive of Haskell.</p>
+easily five times longer. But this isn&#39;t necessary a problem with Java, rather
+it&#39;s a positive of Haskell.</p>
 
 <p>Haskell and other functional languages are simply built with recursion in mind.
 Combined with ADTs where you could much more easily express recursive structures
 and the ability to define inner functions, writing recursive functions in these
 languages is simply easier and cleaner. In Java you have to pollute the
-namespace with &ldquo;helper&rdquo; functions, while in a functional language you can simply
-define the &ldquo;helper&rdquo; function as an inner function or avoid it all together.
+namespace with &quot;helper&quot; functions, while in a functional language you can simply
+define the &quot;helper&quot; function as an inner function or avoid it all together.
 Theoretically, <em>if</em> Java supported tail-call optimization, the factorial
 function would be something similar to this</p>
 
@@ -645,7 +625,6 @@ function would be something similar to this</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>The problem with this is that the private <code>factorial</code> function will <strong>never</strong> be
 used outside of the public <code>factorial</code>, yet there it is, at the top-level,
 available for other functions in the same file to call erroneously.</p>
@@ -659,9 +638,8 @@ Consider the definition of a Tree</p>
 </pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">data</span> <span class="nc">Tree</span> <span class="n">a</span> <span class="k">=</span> <span class="nc">Node</span> <span class="n">a</span> <span class="o">(</span><span class="nc">Tree</span> <span class="n">a</span><span class="o">)</span> <span class="o">(</span><span class="nc">Tree</span> <span class="n">a</span><span class="o">)</span> <span class="o">|</span> <span class="nc">Empty</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>It captures the nature of a Tree without overwhelming you with extraneous
-methods or clunky getters and setters. ADTs aren&rsquo;t the answer all the time, but
+methods or clunky getters and setters. ADTs aren&#39;t the answer all the time, but
 being able to reach for them when a class will simply be heavy-handed is
 helpful.</p>
 
@@ -669,7 +647,7 @@ helpful.</p>
 
 <p>Recursion has a bad name for a lot of programmers, often being seen as not
 practical or too expensive to actually use, but the truth is that recursion is a
-great tool to have in your toolbox. It&rsquo;s not a panacea and it&rsquo;s not always
+great tool to have in your toolbox. It&#39;s not a panacea and it&#39;s not always
 better than a loop, but some functions are naturally recursive so writing these
 functions iteratively would not only be messy but also a much greater task.
 Loops are fine for indexing into an array, but if you have a recursive data
@@ -686,7 +664,6 @@ more sense.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>But with a List, this makes more sense</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -697,17 +674,16 @@ more sense.</p>
 </span><span class='line'><span class="nf">map</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map</span> <span class="n">xs</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>The way you approach a data structure should be defined by it&rsquo;s nature. You
-shouldn&rsquo;t try to approach a tree iteratively just like you shouldn&rsquo;t try to
+<p>The way you approach a data structure should be defined by it&#39;s nature. You
+shouldn&#39;t try to approach a tree iteratively just like you shouldn&#39;t try to
 index into a list and treat it like an array. The problem with this is that the
-more common languages don&rsquo;t have good support for recursion so a lot of
+more common languages don&#39;t have good support for recursion so a lot of
 programmers could be left thinking that recursion is more-or-less a novelty.</p>
 
-<p>I didn&rsquo;t appreciate recursion until I had no choice but to actually use it.
-After actually using it, I started to appreciate recursion for it&rsquo;s simplicity
-and it&rsquo;s strength, it was only after I took the
-<a href="https://www.cs.berkeley.edu/~bh/pdf/v1ch08.pdf">leap of faith</a>
+<p>I didn&#39;t appreciate recursion until I had no choice but to actually use it.
+After actually using it, I started to appreciate recursion for it&#39;s simplicity
+and it&#39;s strength, it was only after I took the
+<a href="https://www.cs.berkeley.edu/%7Ebh/pdf/v1ch08.pdf">leap of faith</a>
 that I realized how clear and elegant recursion can be. So before thinking that
 recursion is the problem, think about the language first. It might be the
 language that is ugly and not recursion itself.</p>
@@ -761,6 +737,10 @@ language that is ugly and not recursion itself.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/04/the-hof-of-hof/">The HOF of HOF</a>
       </li>
     
@@ -775,6 +755,35 @@ language that is ugly and not recursion itself.</p>
   </ul>
 </section>
 
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/vandrada">@vandrada</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'vandrada',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
 
 
 
@@ -784,9 +793,6 @@ language that is ugly and not recursion itself.</p>
   <p> This blog will be filled with things that I find interesting. At the
     moment, that's primarily functional programming and looking back at the work
     I did during my time as a student. </p>
-  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
-      alt="GitHub" height="100" width="100"
-      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
 </section>
 
   

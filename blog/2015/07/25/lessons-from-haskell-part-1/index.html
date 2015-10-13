@@ -91,7 +91,7 @@ evaluation.</p>
 <p>I know lazy evaluation is sort of  a wedge in the programming community. Some
 people like it, other people feel like it makes understanding the program more
 complicated especially when it comes to memory usage, but it does have some
-perks. I don&rsquo;t want to get into lazy evaluation by default, but rather how
+perks. I don&#39;t want to get into lazy evaluation by default, but rather how
 thunks could be used to decrease memory usage.</p>
 
 <h2>Thunk Basics</h2>
@@ -104,8 +104,7 @@ thunk can be written like this</p>
 </pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">print_endline</span><span class="o">(</span><span class="s2">&quot;hello world&quot;</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>This particular function has type <code>unit -&gt; unit</code>, but it&rsquo;s an anonymous
+<p>This particular function has type <code>unit -&gt; unit</code>, but it&#39;s an anonymous
 function that has no formal arguments, so just like that we have a thunk!</p>
 
 <p>So once we have a thunk we can evaluate it by evaluating the underlying
@@ -119,14 +118,13 @@ function and access the actual value.</p>
 </span><span class='line'><span class="c">(* prints hello world *)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p><code>x ()</code> supplies the <code>unit</code> needed to apply the thunk and we get access to the
-underlying value, in this case, a function that returns <code>()</code> and prints &ldquo;Hello
-world&rdquo;.</p>
+underlying value, in this case, a function that returns <code>()</code> and prints &quot;Hello
+world&quot;.</p>
 
 <p>This particular example is pretty boring, but we can use thunks to defer
-expensive computations. For example, let&rsquo;s make a function that sleeps for five
-seconds and then returns a value. Let&rsquo;s pretend that this function is actually
+expensive computations. For example, let&#39;s make a function that sleeps for five
+seconds and then returns a value. Let&#39;s pretend that this function is actually
 doing something important in those five seconds like making requests to a server
 or computing the Mandlebrot set.</p>
 
@@ -134,11 +132,10 @@ or computing the Mandlebrot set.</p>
 </pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="nn">UnixThread</span><span class="p">.</span><span class="n">sleep</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">23</span><span class="o">;;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>This particular thunk now has type <code>unit -&gt; int</code> since it still requires the
 mandatory <code>unit</code> but now it results in an <code>int</code>.  Even though this function
 sleeps for five seconds, the function is created just as fast a regular function
-and we can choose when to evaluate it. Only when it&rsquo;s actually evaluated will
+and we can choose when to evaluate it. Only when it&#39;s actually evaluated will
 the call to <code>sleep</code> happen.</p>
 
 <h2>Using Thunks with Large Datasets</h2>
@@ -171,7 +168,6 @@ if we have a HDF5 file with three objects such as</p>
 </span><span class='line'>     <span class="o">+---</span> <span class="n">baz</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Instead of storing the actual values for all three HDF5 objects, we can just
 store three thunks and let the user decide what objects they want to read.  Only
 when they are requested is anything actually read. These could then be stored
@@ -185,15 +181,13 @@ in a list.</p>
 </span><span class='line'>data<span class="p">[</span><span class="s">&#39;baz&#39;</span><span class="p">]</span>  <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;baz&quot;</span><span class="p">)</span> <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>And accessing the actual object&ndash;evaluating the thunk&ndash;is as simple as</p>
+<p>And accessing the actual object--evaluating the thunk--is as simple as</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='r'><span class='line'>data<span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]()</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>Since we&rsquo;re not storing the actual objects themselves, but thunks that <em>will</em>
+<p>Since we&#39;re not storing the actual objects themselves, but thunks that <em>will</em>
 evaluate to them, we can keep the memory usage down. Instead of storing lists of
 thousands of elements, we just store a simple, humble function.</p>
 
@@ -212,7 +206,6 @@ looks like this that lazily reads the objects in a HDF5 file.</p>
 </span><span class='line'><span class="c1"># do something with test...</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>In this example, only the object <code>foo</code> is read and the other objects in the HDF5
 file remain wrapped in thunks, waiting to be evaluated. To make it sweeter, we
 can also avoid storing <code>NULL</code>s in the list.</p>
@@ -230,18 +223,16 @@ lazy by default so a list in Haskell is already a <code>Stream</code>)</p>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">fibs</span> <span class="ow">=</span> <span class="mi">0</span> <span class="kt">:</span> <span class="mi">1</span> <span class="kt">:</span> <span class="n">zipWith</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">fibs</span> <span class="p">(</span><span class="n">tail</span> <span class="n">fibs</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>And then get the first 10</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take</span> <span class="mi">10</span> <span class="n">fibs</span> <span class="c1">-- [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>After this, only the first 10 ten elements in <code>fibs</code> are evaluated, the rest of
 the list remains wrapped in a thunk.</p>
 
-<p>Just don&rsquo;t try to print the whole list!</p>
+<p>Just don&#39;t try to print the whole list!</p>
 </div>
 
 
@@ -290,6 +281,10 @@ the list remains wrapped in a thunk.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/04/the-hof-of-hof/">The HOF of HOF</a>
       </li>
     
@@ -304,6 +299,35 @@ the list remains wrapped in a thunk.</p>
   </ul>
 </section>
 
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/vandrada">@vandrada</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'vandrada',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
 
 
 
@@ -313,9 +337,6 @@ the list remains wrapped in a thunk.</p>
   <p> This blog will be filled with things that I find interesting. At the
     moment, that's primarily functional programming and looking back at the work
     I did during my time as a student. </p>
-  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
-      alt="GitHub" height="100" width="100"
-      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
 </section>
 
   

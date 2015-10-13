@@ -9,8 +9,8 @@
   <meta name="author" content="Vincent">
 
   
-  <meta name="description" content="One of the first things that could strike fear into anyone who wants to learn
-functional programming that comes from an imperative background is the &hellip;">
+  <meta name="description" content="The Initial Question A couple of years ago, a question was asked about list comprehensions on the
+Python Google+ Community. Unfortunately, the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +70,634 @@ functional programming that comes from an imperative background is the &hellip;"
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-10-11T16:07:08-05:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:07 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>The Initial Question</h2>
+
+<p>A couple of years ago, a question was asked about list comprehensions on the
+Python Google+ Community. Unfortunately, the question was deleted by the person
+who asked it, but it was essentially something along the lines of this</p>
+
+<blockquote>
+<p>Can someone explain list comprehensions to me? They look ugly and the syntax
+doesn&#39;t seem to be Pythonic</p>
+</blockquote>
+
+<p>Immediately, answers were posted that showed that this list comprehension</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>is equivalent to this loop</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Explanations were given that mentioned that the syntax for list
+comprehensions--while not immediately clear--is similar to
+<a href="https://en.wikipedia.org/wiki/Set-builder_notation">set-builder notation</a>
+in math.</p>
+
+<blockquote>
+<p>Ok, but why?</p>
+</blockquote>
+
+<p>This is when the execution time came up, using the <code>timeit</code> module, I found out
+that list comprehensions were actually faster.</p>
+
+<p>Comparing the two code snippets above, we get</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;[x * 2 for x in range(0, 100)]&quot;</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">11.9</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;xs = []&quot;</span> <span class="s">&quot;for x in range(0, 100): xs.append(x * 2)&quot;</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">23.5</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>After this, the conversation quickly devolved into people saying that if you
+really care about speed you shouldn&#39;t be using Python to begin with, Python is
+<em>so</em> slow, Python sucks because <code>_</code>, <em>ad infinitum</em></p>
+
+<p>I was really amazed that list comprehensions were faster and I always wanted to
+look deeper into them, but I was school in then, and I didn&#39;t have the time for
+it.</p>
+
+<p>But now I have the time, so let&#39;s see if we can find out <em>why</em> list comprehensions
+are faster.</p>
+
+<h2>Dissecting the Bytecode for List Comprehensions</h2>
+
+<p><em>The following bytecode is produced by Python version 2.7.10. I know Python
+doesn&#39;t have a standard so the bytecode produced by different versions my very
+well be different</em></p>
+
+<p>We can use the awesome <code>dis</code> module to get the bytecode so let&#39;s write a simple
+function that builds up the list and returns it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">list_comp</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now we can call <code>dis.dis(list_comp)</code> and here&#39;s the annotated bytecode in all
+its glory.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>      <span class="mi">0</span> <span class="n">BUILD_LIST</span>               <span class="mi">0</span>            <span class="c"># pushes [] onto the stack</span>
+</span><span class='line'>      <span class="mi">3</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">0</span> <span class="p">(</span><span class="nb">range</span><span class="p">)</span>    <span class="c"># pushes `range` onto the stack</span>
+</span><span class='line'>      <span class="mi">6</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c"># pushes 0 onto the stack</span>
+</span><span class='line'>      <span class="mi">9</span> <span class="n">LOAD_CONST</span>               <span class="mi">2</span> <span class="p">(</span><span class="mi">100</span><span class="p">)</span>      <span class="c"># pushes 100 onto the stack</span>
+</span><span class='line'>     <span class="mi">12</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>            <span class="c"># calls `range(0, 100)`</span>
+</span><span class='line'>     <span class="mi">15</span> <span class="n">GET_ITER</span>                              <span class="c"># gets the iterator from the list</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">16</span> <span class="n">FOR_ITER</span>                 <span class="mi">16</span> <span class="p">(</span><span class="n">to</span> <span class="mi">35</span><span class="p">)</span>   <span class="c"># calls `next` on the iterator and pushes the value on the stack</span>
+</span><span class='line'>     <span class="mi">19</span> <span class="n">STORE_FAST</span>               <span class="mi">0</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>        <span class="c"># stores the element from the iterator at co_varnames[0]</span>
+</span><span class='line'>     <span class="mi">22</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>        <span class="c"># pushes co_varnames[0] onto the stack</span>
+</span><span class='line'>     <span class="mi">25</span> <span class="n">LOAD_CONST</span>               <span class="mi">3</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>        <span class="c"># loads 2 onto the stack</span>
+</span><span class='line'>     <span class="mi">28</span> <span class="n">BINARY_MULTIPLY</span>                       <span class="c"># multiplies the two top variables and stores it on the stack</span>
+</span><span class='line'>     <span class="mi">29</span> <span class="n">LIST_APPEND</span>              <span class="mi">2</span>            <span class="c"># appends the multiplied value to the list</span>
+</span><span class='line'>     <span class="mi">32</span> <span class="n">JUMP_ABSOLUTE</span>           <span class="mi">16</span>            <span class="c"># continues the iteration...</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">35</span> <span class="n">RETURN_VALUE</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now let&#39;s try to dissect it step-by-step and see if we can see how everything
+works. (You can see the documentation for all the bytecode operations
+<a href="https://docs.python.org/2/library/dis.html#python-bytecode-instructions">here</a>)</p>
+
+<ul>
+<li><code>BUILD_LIST</code> creates a new list with 0 elements and pushes it onto the stack. So
+the stack at the end of the call looks like this</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_GLOBAL</code> pushes the global function <code>range</code> onto the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">range</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 0 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 100 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">100</span>
+</span><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>CALL_FUNCTION 2</code> finally makes this ineresting. <code>CALL_FUNCTION</code> is used to
+actually call the <code>range</code> function. It uses the 0 and 100 from the stack as
+arguments for the <code>range</code> function. Finally, after the function has been called,
+it pushes the return value on the stack, so after calling the function, the
+stack looks like this.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">]</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>GET_ITER</code> implements <code>TOS = iter(TOS)</code>, where TOS stands for &quot;top of stack&quot;.
+So this operation takes the list returned by <code>range</code> and replaces it with an
+iterator object on the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now we begin the actual iteration part and we can start building the list</p>
+
+<ul>
+<li><code>FOR_ITER</code> calls the <code>next</code> method of the iterator that is currently on top of
+the stack and pushes that value on the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>STORE_FAST</code> stores the top of the stack value in <code>co_varnames[0]</code>--in a
+variable named <code>x</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_FAST</code> pushes a <em>reference</em> from <code>co_varnames</code> onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 2 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">2</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>BINARY_MULTIPLY</code> multiples the two uppermost elements on the stack and
+pushes the resulting value onto the stack. So in this case, it multiplies 2 with
+&amp;x where &amp;x is dereferenced from <code>co_varnames[0]</code>. From the <code>STORE_FAST</code>
+operation earlier, <code>co_varnames[0]</code> contains 0.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LIST_APPEND</code> is used for list comprehensions (surprise surprise!) and stores
+the topmost element on the stack in the list we created earlier with <code>BUILD_LIST</code>.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>JUMP_ABSOLUTE</code> jumps to the <code>FOR_ITER</code> call and we repeat until the iterator
+is exhausted. Once it&#39;s exhausted, we pop the iterator and return the list.</li>
+</ul>
+
+<p>Whew! that was quite the whirlwind, but aside from pushing values onto the stack
+to use them as arguments to certain function calls, all the operations are
+pretty straight-forward and we can see how it all comes together to build a new
+list. The first thing that was done was creating a list from the <code>range</code>
+function, once we had the list, we created an iterator from it and after we had
+the iterator, we were able to begin getting elements from it and multiplying
+them by two and storing them in the list that would eventually be returned. Once
+the iterator is empty, all we do is return the list and we&#39;re done.</p>
+
+<h2>Dissection the Bytecode for the For Loop</h2>
+
+<p>Similar to what we did with the list comprehension, let&#39;s write an equivalent
+function but use the <code>for ... in</code> construct instead</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">list_iter</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>And here&#39;s the annotated bytecode produced by <code>dis</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>      <span class="mi">0</span> <span class="n">BUILD_LIST</span>               <span class="mi">0</span>          <span class="c"># pushes [] onto the stack</span>
+</span><span class='line'>      <span class="mi">3</span> <span class="n">STORE_FAST</span>               <span class="mi">0</span> <span class="p">(</span><span class="n">xs</span><span class="p">)</span>     <span class="c"># stores the list in co_varnames[0]</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="mi">6</span> <span class="n">SETUP_LOOP</span>              <span class="mi">40</span> <span class="p">(</span><span class="n">to</span> <span class="mi">49</span><span class="p">)</span>  <span class="c"># pushes the for loop onto the block stack</span>
+</span><span class='line'>      <span class="mi">9</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">0</span> <span class="p">(</span><span class="nb">range</span><span class="p">)</span>  <span class="c"># pushes `range` onto the stack</span>
+</span><span class='line'>     <span class="mi">12</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c"># pushes 0 onto the stack</span>
+</span><span class='line'>     <span class="mi">15</span> <span class="n">LOAD_CONST</span>               <span class="mi">2</span> <span class="p">(</span><span class="mi">100</span><span class="p">)</span>    <span class="c"># pushes 100 onto the stack</span>
+</span><span class='line'>     <span class="mi">18</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>          <span class="c"># calls `range(0, 100)`</span>
+</span><span class='line'>     <span class="mi">21</span> <span class="n">GET_ITER</span>                            <span class="c"># gets the iterator from the list</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">22</span> <span class="n">FOR_ITER</span>                <span class="mi">23</span> <span class="p">(</span><span class="n">to</span> <span class="mi">48</span><span class="p">)</span>  <span class="c"># calls `next` on the iterator and pushes the value on the stack</span>
+</span><span class='line'>     <span class="mi">25</span> <span class="n">STORE_FAST</span>               <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>      <span class="c"># stores the element from the iterator at co_varnames[1]</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="mi">28</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">xs</span><span class="p">)</span>     <span class="c"># pushes co_varnames[0] (xs) onto the stack</span>
+</span><span class='line'>     <span class="mi">31</span> <span class="n">LOAD_ATTR</span>                <span class="mi">1</span> <span class="p">(</span><span class="n">append</span><span class="p">)</span> <span class="c"># pushes the `append` function onto the stack</span>
+</span><span class='line'>     <span class="mi">34</span> <span class="n">LOAD_FAST</span>                <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>      <span class="c"># pushes a reference from co_varnames[1] onto the stack</span>
+</span><span class='line'>     <span class="mi">37</span> <span class="n">LOAD_CONST</span>               <span class="mi">3</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>      <span class="c"># pushes 2 onto the stack</span>
+</span><span class='line'>     <span class="mi">40</span> <span class="n">BINARY_MULTIPLY</span>                     <span class="c"># multiplies the two top variables and stores the result on the stack</span>
+</span><span class='line'>     <span class="mi">41</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">1</span>          <span class="c"># calls `append` with xs and the result from the previous call</span>
+</span><span class='line'>     <span class="mi">44</span> <span class="n">POP_TOP</span>                             <span class="c"># pops xs from the stack</span>
+</span><span class='line'>     <span class="mi">45</span> <span class="n">JUMP_ABSOLUTE</span>           <span class="mi">22</span>          <span class="c"># continues the iteration...</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">48</span> <span class="n">POP_BLOCK</span>                           <span class="c"># pops the for block from the block stack</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">49</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">xs</span><span class="p">)</span>     <span class="c"># pushes xs back onto the stack</span>
+</span><span class='line'>     <span class="mi">52</span> <span class="n">RETURN_VALUE</span>                        <span class="c"># returns the value at the top of the stack</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The bytecode is obviously longer and there&#39;s some new operations in there, but
+we can also see parts from the list comprehension bytecode. Nevertheless, let&#39;s
+go through it step-by-step.</p>
+
+<ul>
+<li><code>BUILD_LIST</code> creates a new list with 0 elements and pushes it onto the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>STORE_FAST</code> stores the value at the top of the stack at <code>co_varnames[0]</code>, in
+this case it&#39;s named xs</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">empty</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>SETUP_LOOP</code> pushes a block of code onto the <em>block</em> stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">empty</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_GLOBAL</code> pushes the <code>range</code> function onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">range</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 0 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 100 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">100</span>
+</span><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>CALL_FUNCTION</code> calls <code>range(0, 100)</code> and pushes the resulting list onto the
+stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>GET_ITER</code> gets an iterator object from the list at the top of the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>FOR_ITER</code> calls <code>next</code> on the iterator object from the previous operation and
+stores it on the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>STORE_FAST</code> stores the value at the top of the stack at <code>co_varnames[1]</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_FAST</code> pushes a <em>reference</em> of <code>xs</code> onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&amp;</span><span class="n">xs</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_ATTR</code> replaces the top value of the stack with an attribute function. In
+this case <code>xs.append</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_FAST</code> pushes a reference to <code>x</code> onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 2 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">2</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>BINARY_MULTIPLY</code> multiplies 2 and 0 and stores it on the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>CALL_FUNCTION</code> calls <code>xs.append(0)</code>, pops 0 from the stack, and pushes the
+return value onto the stack--in this case <code>None</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">None</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>POP_TOP</code> simply pops the top element from the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>JUMP_ABSOLUTE</code> goes back to the <code>FOR_ITER</code> operation and begins the whole
+thing again</li>
+</ul>
+
+<p>This makes the list comprehension&#39;s bytecode pale in comparision, and after
+going through the bytecode, we can see that the this version has to do many
+more things such as pushing the for block onto the block stack, pushing <code>xs</code>
+onto the stack just to load the list attribute <code>append</code>, and popping <code>None</code> from
+the stack after the call to <code>append</code>.</p>
+
+<h2>Using Map</h2>
+
+<p>Maybe having to push <code>xs</code> onto the stack and popping it off the stack in the for
+loop version is the reason why it takes double the time as the list
+comprehension, so for completeness, let&#39;s look at one more way to build up a
+list: using <code>map</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now let&#39;s time it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;map(lambda x: x * 2, range(0, 100))&quot;</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">22.9</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Ok, so using map takes longer than the list comprehension <em>and</em> the for loop
+version, let&#39;s get the bytecode and see what happens behind the scenes</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'> <span class="mi">0</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">0</span> <span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+</span><span class='line'> <span class="mi">3</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">code</span> <span class="nb">object</span> <span class="o">&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x104ff16b0</span><span class="p">,</span> <span class="nb">file</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">)</span>
+</span><span class='line'> <span class="mi">6</span> <span class="n">MAKE_FUNCTION</span>            <span class="mi">0</span>
+</span><span class='line'> <span class="mi">9</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">1</span> <span class="p">(</span><span class="nb">range</span><span class="p">)</span>
+</span><span class='line'><span class="mi">12</span> <span class="n">LOAD_CONST</span>               <span class="mi">2</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="mi">15</span> <span class="n">LOAD_CONST</span>               <span class="mi">3</span> <span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</span><span class='line'><span class="mi">18</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>
+</span><span class='line'><span class="mi">21</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>
+</span><span class='line'><span class="mi">24</span> <span class="n">RETURN_VALUE</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The bytecode is actually <em>shorter</em> than any other version, so that makes the
+hypothesis that the number of operations affects the run time and more
+operations means more time false and untenable.</p>
+
+<h2>Conclusion</h2>
+
+<p>I&#39;m not claiming to be a master of Python bytecode at all, but after dissecting
+three different ways to build up a list, I suspect the <code>LIST_APPEND</code> operation
+to be the reason behind the list comprehension being faster than the other
+versions. By using <code>LIST_APPEND</code> the list comprehension avoids calling
+<code>LOAD_ATTR</code> and <code>CALL_FUNCTION</code> like the for loop. The full documentation for
+<code>LIST_APPEND</code> is</p>
+
+<blockquote>
+<p>Calls <code>list.append(TOS[-i], TOS)</code>. <strong>Used to implement list comprehensions.</strong>
+While the appended value is popped off, the list object remains on the stack
+so that it is available for further iterations of the loop.
+(emphasis added)</p>
+</blockquote>
+
+<p>Which leads me to think that <code>LIST_APPEND</code> is an optimization used to make list
+comprehensions faster.</p>
+
+<p>All of these thoughts come with an asterisk of course. I have no idea if this is
+the reason why list comprehensions are faster, but I definitely suspect
+<code>LIST_APPEND</code> to be at least part of the reason.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/10/04/the-hof-of-hof/">The HOF of HOF</a></h1>
     
     
@@ -94,19 +722,19 @@ supports the familiar for-loop
 and
 <a href="https://clojuredocs.org/clojure.core/loop">Clojure</a>
 kind of supports for-loops, but
-these are seen more as escape hatches and aren&rsquo;t considered &lsquo;pure&rsquo;. They are
+these are seen more as escape hatches and aren&#39;t considered &#39;pure&#39;. They are
 nice for the convenience and the familiarity of them, but a higher order
 function would be better to use in a functional language and there are a couple
 of basic ones at your disposal: <code>map</code>, <code>fold</code>, and <code>filter</code> (or variations
 thereof for certain languages). Using these in place of for-loops not only
 results in cleaner code, but also forces you to think about what you plan on
 doing with your for-loop in any language. Each of these functions has a
-particular use, so let&rsquo;s enter <strong>The Hall of Fame of Higher-Order Functions</strong>
+particular use, so let&#39;s enter <strong>The Hall of Fame of Higher-Order Functions</strong>
 and see them one at a time.</p>
 
 <h2>First Attraction: Map</h2>
 
-<p><img src="http://reactivex.io/documentation/operators/images/map.png" alt="" />
+<p><img src="http://reactivex.io/documentation/operators/images/map.png" alt="">
 <code>map</code> transforms a collection by applying a function to each element. <code>map</code>
 essentially replaces something like this in Java</p>
 
@@ -118,17 +746,15 @@ essentially replaces something like this in Java</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>with this</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map</span> <span class="p">(</span><span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="n">arr</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>It&rsquo;s Haskell specific signature is <code>map :: (a -&gt; b) -&gt; [a] -&gt; [b]</code> which can be
+<p>It&#39;s Haskell specific signature is <code>map :: (a -&gt; b) -&gt; [a] -&gt; [b]</code> which can be
 translated to: <code>map</code> takes a function that takes <code>a</code>s as input and produces
-<code>b</code>s, a list of <code>a</code>s and finally produces a list of <code>b</code>s. While that&rsquo;s kind of
+<code>b</code>s, a list of <code>a</code>s and finally produces a list of <code>b</code>s. While that&#39;s kind of
 awkward to try to distill in English. Some examples definitely help.</p>
 
 <p>Assuming you have a list of <code>Int</code>s and you want a list of <code>String</code>s, you can
@@ -138,24 +764,22 @@ convert the while list with this simple one-liner</p>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map</span> <span class="n">show</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1">-- [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Want to convert a <code>String</code> to all upper case? Map can do that too</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">map</span> <span class="n">toUpper</span> <span class="s">&quot;hola mundo&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>which results in the <code>String</code> &ldquo;HOLA MUNDO&rdquo;</p>
+<p>which results in the <code>String</code> &quot;HOLA MUNDO&quot;</p>
 
 <h2>Second Attraction: Filter</h2>
 
-<p><img src="http://reactivex.io/documentation/operators/images/filter.png" alt="" />
-<code>filter</code> lives up to it&rsquo;s name and filters elements from a list. <code>filter</code>
+<p><img src="http://reactivex.io/documentation/operators/images/filter.png" alt="">
+<code>filter</code> lives up to it&#39;s name and filters elements from a list. <code>filter</code>
 applies a predicate to each element in the lists and only keeps those elements
 if the predicate is true for that element. The Haskell-specific signature for
 <code>filter</code> is <code>filter :: (a -&gt; Bool) -&gt; [a] -&gt; [a]</code>. Skipping the verbosity of a
-translated description, let&rsquo;s go straight to some examples.</p>
+translated description, let&#39;s go straight to some examples.</p>
 
 <p>Removing odd elements from a list becomes ridiculously easy</p>
 
@@ -163,9 +787,8 @@ translated description, let&rsquo;s go straight to some examples.</p>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">filter</span> <span class="n">even</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>While that example is straight-forward, <code>filter</code> could be used for more complex
-things. Let&rsquo;s say for some peculiar reason you use <code>ghci</code> as your grocery list
+things. Let&#39;s say for some peculiar reason you use <code>ghci</code> as your grocery list
 and you want to remove elements that you think are too expensive.  We could
 code this up in Haskell and use <code>filter</code> to remove items that cost more than
 $3.00</p>
@@ -188,8 +811,7 @@ $3.00</p>
 </span><span class='line'><span class="nf">filter</span> <span class="p">(</span><span class="nf">\</span><span class="n">p</span> <span class="ow">-&gt;</span> <span class="n">price</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="mf">3.00</span><span class="p">)</span> <span class="n">ps</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>which is far more succinct&ndash;and explicit&ndash;than something along the lines of</p>
+<p>which is far more succinct--and explicit--than something along the lines of</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -237,39 +859,34 @@ $3.00</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <h2>Our Final Attraction: Fold</h2>
 
 <p style="text-align:center;">
 <img src="https://wiki.haskell.org/wikiupload/5/5a/Left-fold-transformation.png">
 </p>
 
-
-
-
 <p style="text-align:center;">
 <img src="https://wiki.haskell.org/wikiupload/3/3e/Right-fold-transformation.png">
 </p>
 
-
 <p><code>fold</code> is <em>the</em> higher-order recursive function. <code>map</code> and <code>filter</code> can be
 expressed in terms of fold. In The HOF of HOF <code>fold</code> is the GOAT. <code>fold</code> is
-complex at first, but once you get a hold of it, you&rsquo;ll see that it can be
+complex at first, but once you get a hold of it, you&#39;ll see that it can be
 applied to so many different areas. So if <code>map</code> is for transforming elements
-and <code>filter</code> is for removing elements, what&rsquo;s the purpose of <code>fold</code>? Well,
+and <code>filter</code> is for removing elements, what&#39;s the purpose of <code>fold</code>? Well,
 <code>fold</code> is for reducing a collection of values to a single value, which explains
 why <code>fold</code> is also known as <code>reduce</code> or <code>aggregate</code> in so many other languages.</p>
 
 <p>Haskell has two primary <code>fold</code> functions. <code>foldr</code> starts from the right end of
-the list, and <code>foldl</code> starts at the left-end of the list. When you&rsquo;re using an
-associative function, the difference isn&rsquo;t all that important, but once you
-start using functions that aren&rsquo;t associative like subtraction, the difference
+the list, and <code>foldl</code> starts at the left-end of the list. When you&#39;re using an
+associative function, the difference isn&#39;t all that important, but once you
+start using functions that aren&#39;t associative like subtraction, the difference
 is appearant. For some reason, I had a hard time remembering the difference
 between <code>foldl</code> and <code>foldr</code>, in order to remember them, I had to think about
-where the parentheses end up being grouped together.  I&rsquo;m getting a little
+where the parentheses end up being grouped together.  I&#39;m getting a little
 ahead of myself, so time to show the signature and some examples.</p>
 
-<p>Since Haskell doesn&rsquo;t have a generic <code>fold</code> function, I&rsquo;m going to use <code>foldl</code>
+<p>Since Haskell doesn&#39;t have a generic <code>fold</code> function, I&#39;m going to use <code>foldl</code>
 since it has the most analogues in other languages. The signature for <code>foldl</code> is
 <code>foldl :: (b -&gt; a -&gt; b) -&gt; b -&gt; [a] -&gt; b</code>. This function would be really verbose
 to translate, so to the examples we go.</p>
@@ -280,20 +897,18 @@ to translate, so to the examples we go.</p>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">foldl</span> <span class="o">(+)</span> <span class="mi">0</span> <span class="o">[</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>and so can the product</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">foldl</span> <span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="mi">1</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>But a brief walk through is in order since <code>foldl</code> is really the most
 complicated of the three functions.</p>
 
 <h3>Walk Through</h3>
 
-<p>Let&rsquo;s take the sum example and dissect it step-by-step.</p>
+<p>Let&#39;s take the sum example and dissect it step-by-step.</p>
 
 <p>The initial call is <code>foldl (+) 0 [1, 2, 3, 4, 5]</code></p>
 
@@ -305,7 +920,6 @@ results in something along the lines of</p>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="p">(((((</span><span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>But it uses the structure of recursive lists to accomplish this.</p>
 
 <p>We can write an un-optimized <code>fold</code></p>
@@ -316,16 +930,14 @@ results in something along the lines of</p>
 </span><span class='line'><span class="nf">fold</span> <span class="n">f</span> <span class="n">acc</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">fold</span> <span class="n">f</span> <span class="p">(</span><span class="n">f</span> <span class="n">acc</span> <span class="n">x</span><span class="p">)</span> <span class="n">xs</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>and use it throughout this example.</p>
 
 <p>Ok, so with the initial call to <code>fold</code> we follow through the second function
-definition since the list isn&rsquo;t empty. If we expand the function we get</p>
+definition since the list isn&#39;t empty. If we expand the function we get</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">fold</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">1</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
-
 
 <p>In the first reduction, the initial value is simply added to the initial
 accumulator and the list is reduced and now has one less element.</p>
@@ -337,25 +949,24 @@ the second definition and the recursive call would be</p>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">fold</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">3</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>we do much the same thing with 3, 4, 5, and it&rsquo;s not until the end of the list
+<p>we do much the same thing with 3, 4, 5, and it&#39;s not until the end of the list
 that we reach the first definition of <code>fold</code>. Since the list is now empty and
-we&rsquo;ve accumulated all the values, the only thing we need to do is return the
+we&#39;ve accumulated all the values, the only thing we need to do is return the
 accumulated value, which in this example is 15.</p>
 
 <p>This is a high-level overview of <code>fold</code> and the truth is that the magic happens
 in the function that is passed to <code>fold</code>, so instead of using the shortcut of
-<code>(+)</code>, let&rsquo;s expand it to a proper lambda. <code>(+)</code> could be expanded to
-<code>\x y -&gt; x + y</code>, and for this particular example, let&rsquo;s give the variables some
+<code>(+)</code>, let&#39;s expand it to a proper lambda. <code>(+)</code> could be expanded to
+<code>\x y -&gt; x + y</code>, and for this particular example, let&#39;s give the variables some
 meaningful names. If we give the variables better names, we get
 <code>\acc x -&gt; acc + x</code>.</p>
 
-<p>Now that we&rsquo;ve expanded the function used to reduce the list, let&rsquo;s walk through
+<p>Now that we&#39;ve expanded the function used to reduce the list, let&#39;s walk through
 the example again, giving explicit values to <code>acc</code> and <code>x</code>.</p>
 
 <p>The initial call is <code>fold (\acc x -&gt; acc + x) 0 [1, 2, 3, 4, 5]</code>.</p>
 
-<p>And here&rsquo;s a table to show what happens at each step</p>
+<p>And here&#39;s a table to show what happens at each step</p>
 
 <table style="width:40%" border="1">
     <tr>
@@ -390,7 +1001,6 @@ the example again, giving explicit values to <code>acc</code> and <code>x</code>
     </tr>
 </table>
 
-
 <p><br></p>
 
 <p>At this point, all there is to do is add 10 and 5 and return the result which is
@@ -401,7 +1011,7 @@ the example again, giving explicit values to <code>acc</code> and <code>x</code>
 <p>As mentioned earlier, fold is <em>the</em> recursive higher-order function, one of
 the reasons for this is that the return type is entirely open-ended. Unlike
 <code>map</code> and <code>filter</code> which have to return a list, <code>fold</code> is free to return
-anything, as long as it&rsquo;s the <em>accumulated</em> value for that list. This means that
+anything, as long as it&#39;s the <em>accumulated</em> value for that list. This means that
 <code>map</code> could be written in terms of fold and the accumulated value is simply the
 original list but with the function applied to each element.</p>
 
@@ -414,7 +1024,6 @@ function has to accumulate the new list with the function applied.</p>
 </span><span class='line'><span class="nf">myMap</span> <span class="n">f</span> <span class="ow">=</span> <span class="n">foldr</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="n">acc</span> <span class="ow">-&gt;</span> <span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">acc</span><span class="p">)</span> <span class="kt">[]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>And similarly, <code>filter</code> could be expressed in terms of <code>fold</code> and the
 accumulated value is simply a list where the elements satisfy the given
 predicate.</p>
@@ -425,12 +1034,11 @@ predicate.</p>
 </span><span class='line'><span class="nf">myFilter</span> <span class="n">p</span> <span class="ow">=</span> <span class="n">foldr</span> <span class="p">(</span><span class="nf">\</span><span class="n">x</span> <span class="n">acc</span> <span class="ow">-&gt;</span> <span class="kr">if</span> <span class="n">p</span> <span class="n">x</span> <span class="kr">then</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">acc</span> <span class="kr">else</span> <span class="n">acc</span><span class="p">)</span> <span class="kt">[]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <h2>Tips and Tricks</h2>
 
 <p>As alluded to earlier, I had a hard time when I first encountered <code>fold</code>. It
 felt like I was learning loops again, and I think this has to do with the fact
-that it&rsquo;s so general compared to <code>filter</code> and <code>map</code>. You could reduce a list in
+that it&#39;s so general compared to <code>filter</code> and <code>map</code>. You could reduce a list in
 so many ways and reduction is open-ended in every case, it could be a single
 value or a new collection. While <code>map</code>ing and <code>filter</code>ing have straight-forward
 behavior, <code>fold</code>ing and reducing could vary from context to context. As the
@@ -438,16 +1046,16 @@ previous section shows, <code>fold</code> can be used express a lot of other fun
 To save someone else the ride on <code>fold</code>s learning-curve, I want to share a
 couple of things that really helped <code>fold</code> click for me.</p>
 
-<h3>It&rsquo;s All in the Reducing Function</h3>
+<h3>It&#39;s All in the Reducing Function</h3>
 
 <p><code>fold</code> is driven by the reducing function and as such, understanding how the
 reducing function applies in different contexts is extremely helpful. So to
-illustrate that concept, let&rsquo;s implement <code>head</code> and <code>last</code> in terms of <code>fold</code>.
+illustrate that concept, let&#39;s implement <code>head</code> and <code>last</code> in terms of <code>fold</code>.
 <code>head</code> returns the head of a list so <code>head [1, 2, 3, 4, 5]</code> should return <code>1</code>
 and <code>last</code> returns the last element in a list so <code>last [1, 2, 3, 4, 5]</code> should
 return <code>5</code>. Let implement these functions in terms of <code>fold</code>.</p>
 
-<p>For these particular functions, I&rsquo;m going to be using a variation of <code>foldl</code>
+<p>For these particular functions, I&#39;m going to be using a variation of <code>foldl</code>
 called <code>foldl1</code>. <code>foldl1</code> is almost the same as <code>foldl</code> except it uses the first
 element in the list instead of an explicit initializer. Because of this it has a
 simpler signature, which is <code>foldl1 :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</code>.</p>
@@ -463,10 +1071,9 @@ ignores any other element in the list since it keeps passing the first element
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">myHead</span> <span class="ow">=</span> <span class="n">foldl1</span> <span class="p">(</span><span class="nf">\</span><span class="n">acc</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">acc</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>With each recursive call, <code>myHead</code> will reduce the list by one element and
 discard that element, instead it passes the initializer all the way down the list.
-Obviously, this isn&rsquo;t the most asymptotically efficient function since it has to
+Obviously, this isn&#39;t the most asymptotically efficient function since it has to
 iterate through the entirety of the list just to return the first element, but
 this shows that it can be done in terms of <code>fold</code>.</p>
 
@@ -481,34 +1088,33 @@ passing the new element until we reach the end. Now we can write our version of
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">myLast</span> <span class="ow">=</span> <span class="n">foldl1</span> <span class="p">(</span><span class="nf">\</span><span class="n">acc</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Finally, the most important thing to remember about the reducing function is
-that the order of arguments makes a difference. Conveniently, there&rsquo;s a simple
+that the order of arguments makes a difference. Conveniently, there&#39;s a simple
 mnemonic device to remember it. When using <code>foldl</code> the accumulator should be on
 the left side so the lambda should follow something like <code>\acc x -&gt; ...</code> and
 with <code>foldr</code> the accumulator should be on the right side like <code>\x acc -&gt; ...</code>.</p>
 
 <h3>One Last Example</h3>
 
-<p>So finally, for the last example we&rsquo;ll write a simple function that reads a
-<code>String</code> and converts it to an <code>Int</code>. We&rsquo;ll use <code>fold</code> to traverse the <code>String</code>
+<p>So finally, for the last example we&#39;ll write a simple function that reads a
+<code>String</code> and converts it to an <code>Int</code>. We&#39;ll use <code>fold</code> to traverse the <code>String</code>
 and the reducing function will handle building up the final value. The first
 thing we need to decide is which <code>fold</code> to use. Since we need to traverse the
 <code>String</code> from the beginning of the list, we should use <code>foldl</code>. With that out of
-the way, we can move on to the folding function. Since we&rsquo;re using <code>foldl</code> we
+the way, we can move on to the folding function. Since we&#39;re using <code>foldl</code> we
 can start off with the following function template <code>\acc x -&gt; ...</code> and we just
 need to fill in the rest.</p>
 
 <p>The function needs to handle reading the <code>Char</code> and converting it to an <code>Int</code>.
 Luckily, Haskell has the function <code>digitToInt</code> that resides in the <code>Data.Char</code>
 module. <code>digitToInt</code> lives up to its name quite well. The signature is
-<code>digitToInt :: Char -&gt; Int</code>, and <code>digitToInt '7'</code> returns <code>7</code> and <code>digitToInt
-'2'</code> returns <code>2</code>. <code>digitToInt</code> doesn&rsquo;t handle <code>String</code>s, but that&rsquo;s exactly the
-function that we are writing! So let&rsquo;s start calling this function <code>stringToInt</code>.</p>
+<code>digitToInt :: Char -&gt; Int</code>, and <code>digitToInt &#39;7&#39;</code> returns <code>7</code> and <code>digitToInt
+&#39;2&#39;</code> returns <code>2</code>. <code>digitToInt</code> doesn&#39;t handle <code>String</code>s, but that&#39;s exactly the
+function that we are writing! So let&#39;s start calling this function <code>stringToInt</code>.</p>
 
 <p>Ok, so we have reading the <code>Char</code> as an <code>Int</code> and we just need to handle adding
 the new digit and multiplying the accumulated value to account for the different
-places in the number. Fortunately, we&rsquo;re using standard base-10 numbers so all
+places in the number. Fortunately, we&#39;re using standard base-10 numbers so all
 this is ridiculously easy. The folding function is <code>\acc x -&gt; digitToInt x + acc
 * 10</code>. Now, we can tie it all together and <code>stringToInt</code> is an awesome
 one-liner:</p>
@@ -519,15 +1125,13 @@ one-liner:</p>
 </span><span class='line'><span class="nf">stringToInt</span> <span class="n">s</span> <span class="ow">=</span> <span class="n">foldl</span> <span class="p">(</span><span class="nf">\</span><span class="n">acc</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">digitToInt</span> <span class="n">x</span> <span class="o">+</span> <span class="n">acc</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span> <span class="mi">0</span> <span class="n">s</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>So let&rsquo;s try out a new function, to see if it works</p>
+<p>So let&#39;s try out a new function, to see if it works</p>
 
 <ul>
-<li><p><code>stringToInt "23541"</code> returns <code>23541</code></p></li>
-<li><p><code>stringToInt "1"</code> returns <code>1</code></p></li>
-<li><p><code>stringToInt "873132"</code> returns <code>873132</code></p></li>
+<li><p><code>stringToInt &quot;23541&quot;</code> returns <code>23541</code></p></li>
+<li><p><code>stringToInt &quot;1&quot;</code> returns <code>1</code></p></li>
+<li><p><code>stringToInt &quot;873132&quot;</code> returns <code>873132</code></p></li>
 </ul>
-
 
 <p>The really cool thing about <code>stringToInt</code> is that we could use it as a template
 and use it to read binary string or hexadecimal strings. What do we have to
@@ -540,7 +1144,6 @@ multiply by 2. <sup>(Ignoring error-checking of course)</sup></p>
 </span><span class='line'><span class="nf">binaryStringToInt</span> <span class="n">s</span> <span class="ow">=</span> <span class="n">foldl</span> <span class="p">(</span><span class="nf">\</span><span class="n">acc</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">digitToInt</span> <span class="n">x</span> <span class="o">+</span> <span class="n">acc</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="mi">0</span> <span class="n">s</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>And since <code>digitToInt</code> also handles hexadecimal digits, all we need to change is
 the base to convert hexadecimal strings.</p>
 
@@ -550,17 +1153,15 @@ the base to convert hexadecimal strings.</p>
 </span><span class='line'><span class="nf">hexStringToInt</span> <span class="n">s</span> <span class="ow">=</span> <span class="n">foldl</span> <span class="p">(</span><span class="nf">\</span><span class="n">acc</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">digitToInt</span> <span class="n">x</span> <span class="o">+</span> <span class="n">acc</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span> <span class="mi">0</span> <span class="n">s</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>Obviously, there&rsquo;s a simple pattern here, so let&rsquo;s take it one step further and
+<p>Obviously, there&#39;s a simple pattern here, so let&#39;s take it one step further and
 make a function that could read a number in <em>any</em> base (well actually any base
-up to 16 since we&rsquo;re relying on <code>digitToInt</code>) and converts it to an <code>Int</code>.</p>
+up to 16 since we&#39;re relying on <code>digitToInt</code>) and converts it to an <code>Int</code>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">baseStringToInt</span> <span class="ow">::</span> <span class="kt">Int</span> <span class="ow">-&gt;</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">Int</span>
 </span><span class='line'><span class="nf">baseStringToInt</span> <span class="n">base</span> <span class="n">s</span> <span class="ow">=</span> <span class="n">foldl</span> <span class="p">(</span><span class="nf">\</span><span class="n">acc</span> <span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">digitToInt</span> <span class="n">x</span> <span class="o">+</span> <span class="n">acc</span> <span class="o">*</span> <span class="n">base</span><span class="p">)</span> <span class="mi">0</span>
 </span></code></pre></td></tr></table></div></figure>
-
 
 <p>and we could refactor our previous functions to use it</p>
 
@@ -576,56 +1177,55 @@ up to 16 since we&rsquo;re relying on <code>digitToInt</code>) and converts it t
 </span><span class='line'><span class="nf">hexStringToInt</span> <span class="ow">=</span> <span class="n">baseStringToInt</span> <span class="mi">16</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <h2>Conclusion</h2>
 
-<p>So that&rsquo;s the brief tour of The HOF of HOF. We saw <code>map</code>, <code>filter</code>, and finally
+<p>So that&#39;s the brief tour of The HOF of HOF. We saw <code>map</code>, <code>filter</code>, and finally
 the GOAT <code>fold</code>. These functions rely on other functions and transform
 collections in some particular way. The really great thing about learning these
 functions is that they improve your code in any language! I have nothing
-against &ldquo;raw loops&rdquo;&ndash;or loops that use explicit indexes&ndash;and understand that
+against &quot;raw loops&quot;--or loops that use explicit indexes--and understand that
 they have their place, but instead of writing loops that do three different
 things in the body, it makes code a whole lot cleaner to write a loop that does
 one single thing and one thing well. Personally, I used to write for loops with
-bodies that were >90 lines and did everything they possibly could. After
+bodies that were &gt;90 lines and did everything they possibly could. After
 learning about <code>map</code>, <code>filter</code>, and <code>fold</code> I now write loop bodies that
 accomplish their task and quickly exit.</p>
 
 <p>The body of a loop is a dangerous place, you first have to worry about the
 index and not trying to access imaginary elements, and after that you have to
-be careful in the actual body and make sure you&rsquo;re not launching missiles,
+be careful in the actual body and make sure you&#39;re not launching missiles,
 creating way more server requests than you need, or <code>free</code>ing a struct twice.
 <code>map</code>, <code>filter</code>, and <code>fold</code> help in reducing the risk involved in for-loops.
 Unlike raw loops where the body is anything you want it to be, these functions
 require functions that you can easily test outside of these recursive functions.
 While not every language supports these functions, learning what you want to
 accomplish in a loop can help a lot. Maybe for other people this is
-common-sense, but for me, it wasn&rsquo;t until learning <code>map</code>, <code>filter</code>, and <code>fold</code>,
+common-sense, but for me, it wasn&#39;t until learning <code>map</code>, <code>filter</code>, and <code>fold</code>,
 that I started approaching for-loops with a whole lot more discipline. Now, when
-I write a for-loop, I&rsquo;m always aware if I want to remove elements, change
+I write a for-loop, I&#39;m always aware if I want to remove elements, change
 elements, or something more general.</p>
 
-<p>Just like anything else, the functions in The HOF of HOF aren&rsquo;t a cure-all.
-They won&rsquo;t result in magic code that never fails or performs exactly as you
+<p>Just like anything else, the functions in The HOF of HOF aren&#39;t a cure-all.
+They won&#39;t result in magic code that never fails or performs exactly as you
 want. You can still mess up and have your code blow up in your face, but these
 functions enforce the thing that every would-be programmer hears in class or
-sees in an article somewhere: don&rsquo;t repeat yourself&ndash;use functions. Write
+sees in an article somewhere: don&#39;t repeat yourself--use functions. Write
 functions to break up behavior and approach your code in a sensible way. Maybe
 functional programming is a pain, but ultimately, it forces you to use
 higher-level constructs that are just a little bit safer and little bit
 clearer.</p>
 
 <p>For-loops have their place and everyone would be lost without them, but
-instead of approaching them and just saying &ldquo;I need to do <em>x</em> this many times,&rdquo;
+instead of approaching them and just saying &quot;I need to do <em>x</em> this many times,&quot;
 think about exactly what you need to do. Do you need to remove elements, change
-elements or reduce them in some way? Well, it just so happens that that&rsquo;s a
-pretty common operation and there&rsquo;s a nice&ndash;and safe&ndash;way to do that.</p>
+elements or reduce them in some way? Well, it just so happens that that&#39;s a
+pretty common operation and there&#39;s a nice--and safe--way to do that.</p>
 
 <p><em>This marks the end of The Hall of Fame of Higher-Order Functions. Maybe there
 will be new inductees in the future, but this marks the end for now. The exits
 are to the left and to the right. Thank you for your time.</em></p>
 
-<p><em>&hellip; and don&rsquo;t forget to tip your tour guide</em></p>
+<p><em>... and don&#39;t forget to tip your tour guide</em></p>
 </div>
   
   
@@ -657,12 +1257,12 @@ are to the left and to the right. Thank you for your time.</em></p>
   <div class="entry-content"><h2>Introduction</h2>
 
 <p>For better or for worse, recursion is seen as the weird cousin of loops. It
-solves some problems really well, it&rsquo;s often elegant and looks extremely simple,
-yet for some reason, it doesn&rsquo;t get the attention that it should. I know of
+solves some problems really well, it&#39;s often elegant and looks extremely simple,
+yet for some reason, it doesn&#39;t get the attention that it should. I know of
 many people that are out-right scared of recursion, and seeing the lengths some
 people go to code Trees iteratively or use a loop and a stack only shows that
-somewhere along the line, people get a bad idea about recursion. So let&rsquo;s do the
-teen movie treatment and take off recursion&rsquo;s glasses and get rid of the
+somewhere along the line, people get a bad idea about recursion. So let&#39;s do the
+teen movie treatment and take off recursion&#39;s glasses and get rid of the
 ponytail.</p>
 
 <p>Like most other CS students, my first introduction to recursive programming was
@@ -682,8 +1282,7 @@ the usual <code>factorial</code> function</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>At first it was mind-blowing, but after looking at it I realized it&rsquo;s a pretty
+<p>At first it was mind-blowing, but after looking at it I realized it&#39;s a pretty
 simple recursive function. Calling <code>factorial(5)</code> reduces to</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -708,7 +1307,6 @@ simple recursive function. Calling <code>factorial(5)</code> reduces to</p>
 </span><span class='line'>    <span class="mi">120</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>All recursive functions have a base case to stop the recursion and the general
 case that reduces the problem to sub-problems. For <code>factorial</code>, the base case is
 1 and the sub-problem is the factorial <code>n - 1</code>.</p>
@@ -728,7 +1326,6 @@ cell followed by a List. So we can have</p>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Cons</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">Cons</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">Nil</span><span class="o">))))</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Which we could picture with ASCII art as</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -738,7 +1335,6 @@ cell followed by a List. So we can have</p>
 </span><span class='line'><span class="o">|</span> <span class="mi">4</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">3</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="o">-&gt;</span> <span class="n">Nil</span>
 </span><span class='line'><span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>    <span class="o">+---+</span>
 </span></code></pre></td></tr></table></div></figure>
-
 
 <p>Lists are recursive data structures and their usual definition in Java is
 similar to</p>
@@ -757,7 +1353,6 @@ similar to</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>While the actual data structure is recursive, I was taught to treat them in an
 iterative manner. Looping through the list to find the last element and adding a
 new element, or looping through the whole structure to print it. Often times,
@@ -775,8 +1370,7 @@ the code ending up looking something like this</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>Because of this, the recursive nature of Lists wasn&rsquo;t really highlighted and it
+<p>Because of this, the recursive nature of Lists wasn&#39;t really highlighted and it
 took another data structure to really drive the nature of recursive data
 structures home</p>
 
@@ -786,32 +1380,26 @@ structures home</p>
 data structures that are actually treated as such. Similar to other recursive
 data structures, their definition is also simple: a Binary Tree has a root which
 is a node, a node has at most two children, a left child and a right child,
-these children nodes are also binary trees. Here&rsquo;s a simple Binary Tree in
+these children nodes are also binary trees. Here&#39;s a simple Binary Tree in
 ASCII art</p>
-
-<pre><code>            4
+<div class="highlight"><pre><code class="language-text" data-lang="text">            4
         /       \
        3         5
     /     \        \
    1       2        7
-</code></pre>
-
+</code></pre></div>
 <p>This particular tree is a Binary Search Tree since each element to the left of a
 node is less than the root and each element to the right is greater than the
 root. In this example, not only is the tree rooted at 4 a Tree, but</p>
-
-<pre><code>        3
+<div class="highlight"><pre><code class="language-text" data-lang="text">        3
     /       \
    1         2
-</code></pre>
-
+</code></pre></div>
 <p>Is a Tree and so is</p>
-
-<pre><code>    5
+<div class="highlight"><pre><code class="language-text" data-lang="text">    5
         \
          7
-</code></pre>
-
+</code></pre></div>
 <p>A simple Binary Search Tree could be implemented in Java like this</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -910,36 +1498,35 @@ root. In this example, not only is the tree rooted at 4 a Tree, but</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>The code is pretty simple, but it&rsquo;s a bit verbose. A <code>Node</code> has an element and
+<p>The code is pretty simple, but it&#39;s a bit verbose. A <code>Node</code> has an element and
 two children, <code>left</code> and <code>right</code>, and a <code>BST</code> has a <code>Node</code> as a root. Inserting
 an element into a <code>BST</code> first checks if the root is <code>null</code> or if the Tree is
 empty, if it is, we create a new node and this node becomes the root. If the
-root isn&rsquo;t <code>null</code>, we have to check if the element to be added is less than or
-greater than the root&rsquo;s element and insert it to the correct side accordingly.</p>
+root isn&#39;t <code>null</code>, we have to check if the element to be added is less than or
+greater than the root&#39;s element and insert it to the correct side accordingly.</p>
 
 <p>Binary Search Trees made recursion really click for me, but I had one assignment
 that studied two separate implementations of trees, one recursive and another
 with arrays. The recursive implementation always blew the stack and the one with
 the array ran out of space since most of the array is not used, leaving the
-impression that recursion simply isn&rsquo;t a viable alternative. So aside from some
+impression that recursion simply isn&#39;t a viable alternative. So aside from some
 special algorithms that would be a mess if they were written iteratively, I
 almost never used recursion in my day-to-day programming. Instead I stuck to
-loops and thought of recursion as a cool&ndash;if a but murky&ndash;concept, but
+loops and thought of recursion as a cool--if a but murky--concept, but
 ultimately one that was ineffective.</p>
 
 <h2>Embracing Recursion</h2>
 
 <p>While he was teaching us recursion, my professor made a particular remark that
-stayed with me. He said something along the lines of, &ldquo;It&rsquo;s hard to think in
-terms of recursion unless you program in Lisp&hellip;those people could do anything
-with recursion.&rdquo; I looked up Lisp because I really wanted to understand
+stayed with me. He said something along the lines of, &quot;It&#39;s hard to think in
+terms of recursion unless you program in Lisp...those people could do anything
+with recursion.&quot; I looked up Lisp because I really wanted to understand
 recursion and saw all the parens and quickly gave up on learning anything that
 resembled Lisp. But it left me wondering why Lisp programmers would be better at
 recursion than other programmers.</p>
 
 <p>Fast-forward a year or so and there I was learning Haskell, frustrated that it
-didn&rsquo;t have loops and thinking how anyone could get anything done with it. I
+didn&#39;t have loops and thinking how anyone could get anything done with it. I
 knew of <code>map</code>, <code>filter</code>, and <code>fold</code>, but thought they were novelties and that
 it would be difficult to think in terms of only those three functions. When
 recursion came up, I remembered the few times I used it in class and felt uneasy
@@ -963,17 +1550,16 @@ using <em>only</em> recursion.</p>
 </span><span class='line'>    <span class="o">|</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">elem</span> <span class="ow">=</span> <span class="kt">Node</span> <span class="n">x</span> <span class="n">left</span> <span class="p">(</span><span class="n">insert</span> <span class="n">right</span> <span class="n">elem</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>I was blown away by how clear it was. First, the defintion of a <code>Tree</code> is
-exactly what it is. We don&rsquo;t have to create two separate classes, instead we
+exactly what it is. We don&#39;t have to create two separate classes, instead we
 just create an ADT and say that a Tree is either a <code>Node</code> with an element and
-two other <code>Trees</code> or it&rsquo;s <code>Empty</code>. Nothing more and nothing less. The function
+two other <code>Trees</code> or it&#39;s <code>Empty</code>. Nothing more and nothing less. The function
 to insert an element is equally concise, if the <code>Tree</code> is <code>Empty</code> we create a
 new <code>Node</code> and if the <code>Tree</code> is a <code>Node</code> we either add it to the left or to the
 right.</p>
 
 <p>Seeing this function got me rethinking recursion and it made me realize that
-recursion <em>is</em> a valid tool in the programmer&rsquo;s toolbox, it&rsquo;s just that in most
+recursion <em>is</em> a valid tool in the programmer&#39;s toolbox, it&#39;s just that in most
 languages recursion is an after-thought that often leads to the stack being
 blown.</p>
 
@@ -983,10 +1569,10 @@ blown.</p>
 
 <h3>Tail Call Optimization</h3>
 
-<p>So if recursion is a valid tool, why isn&rsquo;t it used more? I know one of the main
+<p>So if recursion is a valid tool, why isn&#39;t it used more? I know one of the main
 reasons that I avoid recursion is because of the stack.</p>
 
-<p>Let&rsquo;s take the familiar factorial function. In Java, we could write</p>
+<p>Let&#39;s take the familiar factorial function. In Java, we could write</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1002,8 +1588,7 @@ reasons that I avoid recursion is because of the stack.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>But we&rsquo;re limited to a certain <code>n</code> since the stack will eventually run out of
+<p>But we&#39;re limited to a certain <code>n</code> since the stack will eventually run out of
 space. For the factorial function, the stack space that is required is linear
 to <code>n</code>. Since we have to maintain the previous calls in order to complete the
 function, the stack continues to grow and grow until BAM! the stack is blown. In
@@ -1019,8 +1604,7 @@ message. However in a language that embraces recursion, what could we do?</p>
 </span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="o">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>But we&rsquo;re limited by the same thing. Since Scala is a JVM language it&rsquo;s bounded
+<p>But we&#39;re limited by the same thing. Since Scala is a JVM language it&#39;s bounded
 by stack space as well, but unlike Java, Scala has support for
 <a href="http://stackoverflow.com/questions/310974/what-is-tail-call-optimization">tail-call optimization</a>
 so instead of simply translating the Java code, we could re-write
@@ -1040,7 +1624,6 @@ it to take advantage of tail-call optimization.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>This version of factorial <em>is</em> tail-recursive. So it uses constant stack space.
 Instead of the factorial function evaluating like it did in the example at the
 beginning of this article, it now evaluates like this</p>
@@ -1051,25 +1634,24 @@ beginning of this article, it now evaluates like this</p>
 </span><span class='line'>    <span class="n">loop</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">20</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">60</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">loop</span> <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">120</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="mi">120</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Instead of <code>loop</code> building on the stack, the previous call can be replaced since
-the variables from the previous call don&rsquo;t have to be maintained. Tail call
-optimization can transform recursive functions to tight <code>while</code> loops that don&rsquo;t
-require extra space and since it&rsquo;s just a loop, there&rsquo;s no need for the
-&lsquo;unwinding&rsquo; that usually accompanies recursive functions. Scala also supports
+the variables from the previous call don&#39;t have to be maintained. Tail call
+optimization can transform recursive functions to tight <code>while</code> loops that don&#39;t
+require extra space and since it&#39;s just a loop, there&#39;s no need for the
+&#39;unwinding&#39; that usually accompanies recursive functions. Scala also supports
 the
 <a href="http://www.scala-lang.org/api/current/index.html#scala.annotation.tailrec">@tailrec</a>
 annotation enabling the compiler to verify that the function is
-indeed tail recursive. If it&rsquo;s not, the compiler will issue an error before you
+indeed tail recursive. If it&#39;s not, the compiler will issue an error before you
 even have the chance to blow the stack with what you thought was a
 tail-recursive function.</p>
 
 <h4>An Example</h4>
 
-<p>Let&rsquo;s compare the difference that tail-call optimization makes by comparing two
+<p>Let&#39;s compare the difference that tail-call optimization makes by comparing two
 programs. They both compute the factorial of a number.</p>
 
-<p>The first one is in Java, and here&rsquo;s the code</p>
+<p>The first one is in Java, and here&#39;s the code</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1129,7 +1711,6 @@ programs. They both compute the factorial of a number.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p><code>factorial</code> blows the stack when trying to compute <code>17000!</code> while
 <code>factorialIter</code> does just fine. The result is huge, being a number with 64,538
 digits.</p>
@@ -1160,8 +1741,7 @@ digits.</p>
 </span><span class='line'><span class="n">println</span><span class="o">(</span><span class="n">factorial</span><span class="o">(</span><span class="mi">17000</span><span class="o">).</span><span class="n">toString</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>This version happily computes <code>17000!</code> so let&rsquo;s try to push it a little bit.</p>
+<p>This version happily computes <code>17000!</code> so let&#39;s try to push it a little bit.</p>
 
 <p>Calling <code>factorial(100000)</code> says that the resulting number has 45,654 digits.</p>
 
@@ -1176,19 +1756,19 @@ thing?</p>
 
 <h3>Syntax</h3>
 
-<p>I know syntax isn&rsquo;t the most important thing to consider when deciding what
+<p>I know syntax isn&#39;t the most important thing to consider when deciding what
 language to use, but it definitely plays a role. As an example, consider the
 difference between the Java and the Haskell implementation for Trees. They both
 accomplish the <em>same</em> thing: construction and insertion, but the Java version is
-easily five times longer. But this isn&rsquo;t necessary a problem with Java, rather
-it&rsquo;s a positive of Haskell.</p>
+easily five times longer. But this isn&#39;t necessary a problem with Java, rather
+it&#39;s a positive of Haskell.</p>
 
 <p>Haskell and other functional languages are simply built with recursion in mind.
 Combined with ADTs where you could much more easily express recursive structures
 and the ability to define inner functions, writing recursive functions in these
 languages is simply easier and cleaner. In Java you have to pollute the
-namespace with &ldquo;helper&rdquo; functions, while in a functional language you can simply
-define the &ldquo;helper&rdquo; function as an inner function or avoid it all together.
+namespace with &quot;helper&quot; functions, while in a functional language you can simply
+define the &quot;helper&quot; function as an inner function or avoid it all together.
 Theoretically, <em>if</em> Java supported tail-call optimization, the factorial
 function would be something similar to this</p>
 
@@ -1216,7 +1796,6 @@ function would be something similar to this</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>The problem with this is that the private <code>factorial</code> function will <strong>never</strong> be
 used outside of the public <code>factorial</code>, yet there it is, at the top-level,
 available for other functions in the same file to call erroneously.</p>
@@ -1230,9 +1809,8 @@ Consider the definition of a Tree</p>
 </pre></td><td class='code'><pre><code class='scala'><span class='line'><span class="n">data</span> <span class="nc">Tree</span> <span class="n">a</span> <span class="k">=</span> <span class="nc">Node</span> <span class="n">a</span> <span class="o">(</span><span class="nc">Tree</span> <span class="n">a</span><span class="o">)</span> <span class="o">(</span><span class="nc">Tree</span> <span class="n">a</span><span class="o">)</span> <span class="o">|</span> <span class="nc">Empty</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>It captures the nature of a Tree without overwhelming you with extraneous
-methods or clunky getters and setters. ADTs aren&rsquo;t the answer all the time, but
+methods or clunky getters and setters. ADTs aren&#39;t the answer all the time, but
 being able to reach for them when a class will simply be heavy-handed is
 helpful.</p>
 
@@ -1240,7 +1818,7 @@ helpful.</p>
 
 <p>Recursion has a bad name for a lot of programmers, often being seen as not
 practical or too expensive to actually use, but the truth is that recursion is a
-great tool to have in your toolbox. It&rsquo;s not a panacea and it&rsquo;s not always
+great tool to have in your toolbox. It&#39;s not a panacea and it&#39;s not always
 better than a loop, but some functions are naturally recursive so writing these
 functions iteratively would not only be messy but also a much greater task.
 Loops are fine for indexing into an array, but if you have a recursive data
@@ -1257,7 +1835,6 @@ more sense.</p>
 </span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>But with a List, this makes more sense</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1268,17 +1845,16 @@ more sense.</p>
 </span><span class='line'><span class="nf">map</span> <span class="n">f</span> <span class="p">(</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">f</span> <span class="n">x</span> <span class="kt">:</span> <span class="n">map</span> <span class="n">xs</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>The way you approach a data structure should be defined by it&rsquo;s nature. You
-shouldn&rsquo;t try to approach a tree iteratively just like you shouldn&rsquo;t try to
+<p>The way you approach a data structure should be defined by it&#39;s nature. You
+shouldn&#39;t try to approach a tree iteratively just like you shouldn&#39;t try to
 index into a list and treat it like an array. The problem with this is that the
-more common languages don&rsquo;t have good support for recursion so a lot of
+more common languages don&#39;t have good support for recursion so a lot of
 programmers could be left thinking that recursion is more-or-less a novelty.</p>
 
-<p>I didn&rsquo;t appreciate recursion until I had no choice but to actually use it.
-After actually using it, I started to appreciate recursion for it&rsquo;s simplicity
-and it&rsquo;s strength, it was only after I took the
-<a href="https://www.cs.berkeley.edu/~bh/pdf/v1ch08.pdf">leap of faith</a>
+<p>I didn&#39;t appreciate recursion until I had no choice but to actually use it.
+After actually using it, I started to appreciate recursion for it&#39;s simplicity
+and it&#39;s strength, it was only after I took the
+<a href="https://www.cs.berkeley.edu/%7Ebh/pdf/v1ch08.pdf">leap of faith</a>
 that I realized how clear and elegant recursion can be. So before thinking that
 recursion is the problem, think about the language first. It might be the
 language that is ugly and not recursion itself.</p>
@@ -1318,7 +1894,7 @@ evaluation.</p>
 <p>I know lazy evaluation is sort of  a wedge in the programming community. Some
 people like it, other people feel like it makes understanding the program more
 complicated especially when it comes to memory usage, but it does have some
-perks. I don&rsquo;t want to get into lazy evaluation by default, but rather how
+perks. I don&#39;t want to get into lazy evaluation by default, but rather how
 thunks could be used to decrease memory usage.</p>
 
 <h2>Thunk Basics</h2>
@@ -1331,8 +1907,7 @@ thunk can be written like this</p>
 </pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="n">print_endline</span><span class="o">(</span><span class="s2">&quot;hello world&quot;</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>This particular function has type <code>unit -&gt; unit</code>, but it&rsquo;s an anonymous
+<p>This particular function has type <code>unit -&gt; unit</code>, but it&#39;s an anonymous
 function that has no formal arguments, so just like that we have a thunk!</p>
 
 <p>So once we have a thunk we can evaluate it by evaluating the underlying
@@ -1346,14 +1921,13 @@ function and access the actual value.</p>
 </span><span class='line'><span class="c">(* prints hello world *)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p><code>x ()</code> supplies the <code>unit</code> needed to apply the thunk and we get access to the
-underlying value, in this case, a function that returns <code>()</code> and prints &ldquo;Hello
-world&rdquo;.</p>
+underlying value, in this case, a function that returns <code>()</code> and prints &quot;Hello
+world&quot;.</p>
 
 <p>This particular example is pretty boring, but we can use thunks to defer
-expensive computations. For example, let&rsquo;s make a function that sleeps for five
-seconds and then returns a value. Let&rsquo;s pretend that this function is actually
+expensive computations. For example, let&#39;s make a function that sleeps for five
+seconds and then returns a value. Let&#39;s pretend that this function is actually
 doing something important in those five seconds like making requests to a server
 or computing the Mandlebrot set.</p>
 
@@ -1361,11 +1935,10 @@ or computing the Mandlebrot set.</p>
 </pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="k">fun</span> <span class="bp">()</span> <span class="o">-&gt;</span> <span class="nn">UnixThread</span><span class="p">.</span><span class="n">sleep</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">23</span><span class="o">;;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>This particular thunk now has type <code>unit -&gt; int</code> since it still requires the
 mandatory <code>unit</code> but now it results in an <code>int</code>.  Even though this function
 sleeps for five seconds, the function is created just as fast a regular function
-and we can choose when to evaluate it. Only when it&rsquo;s actually evaluated will
+and we can choose when to evaluate it. Only when it&#39;s actually evaluated will
 the call to <code>sleep</code> happen.</p>
 
 <h2>Using Thunks with Large Datasets</h2>
@@ -1398,7 +1971,6 @@ if we have a HDF5 file with three objects such as</p>
 </span><span class='line'>     <span class="o">+---</span> <span class="n">baz</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>Instead of storing the actual values for all three HDF5 objects, we can just
 store three thunks and let the user decide what objects they want to read.  Only
 when they are requested is anything actually read. These could then be stored
@@ -1412,15 +1984,13 @@ in a list.</p>
 </span><span class='line'>data<span class="p">[</span><span class="s">&#39;baz&#39;</span><span class="p">]</span>  <span class="o">&lt;-</span> <span class="kr">function</span> <span class="p">()</span> <span class="p">{</span> <span class="kr">return</span> hdf5.read<span class="p">(</span><span class="s">&quot;baz&quot;</span><span class="p">)</span> <span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>And accessing the actual object&ndash;evaluating the thunk&ndash;is as simple as</p>
+<p>And accessing the actual object--evaluating the thunk--is as simple as</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='r'><span class='line'>data<span class="p">[</span><span class="s">&#39;foo&#39;</span><span class="p">]()</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>Since we&rsquo;re not storing the actual objects themselves, but thunks that <em>will</em>
+<p>Since we&#39;re not storing the actual objects themselves, but thunks that <em>will</em>
 evaluate to them, we can keep the memory usage down. Instead of storing lists of
 thousands of elements, we just store a simple, humble function.</p>
 
@@ -1439,7 +2009,6 @@ looks like this that lazily reads the objects in a HDF5 file.</p>
 </span><span class='line'><span class="c1"># do something with test...</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>In this example, only the object <code>foo</code> is read and the other objects in the HDF5
 file remain wrapped in thunks, waiting to be evaluated. To make it sweeter, we
 can also avoid storing <code>NULL</code>s in the list.</p>
@@ -1457,18 +2026,16 @@ lazy by default so a list in Haskell is already a <code>Stream</code>)</p>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">fibs</span> <span class="ow">=</span> <span class="mi">0</span> <span class="kt">:</span> <span class="mi">1</span> <span class="kt">:</span> <span class="n">zipWith</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">fibs</span> <span class="p">(</span><span class="n">tail</span> <span class="n">fibs</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>And then get the first 10</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="nf">take</span> <span class="mi">10</span> <span class="n">fibs</span> <span class="c1">-- [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
 <p>After this, only the first 10 ten elements in <code>fibs</code> are evaluated, the rest of
 the list remains wrapped in a thunk.</p>
 
-<p>Just don&rsquo;t try to print the whole list!</p>
+<p>Just don&#39;t try to print the whole list!</p>
 </div>
   
   
@@ -1489,6 +2056,10 @@ the list remains wrapped in a thunk.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/04/the-hof-of-hof/">The HOF of HOF</a>
       </li>
     
@@ -1503,6 +2074,35 @@ the list remains wrapped in a thunk.</p>
   </ul>
 </section>
 
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/vandrada">@vandrada</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'vandrada',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
 
 
 
@@ -1512,9 +2112,6 @@ the list remains wrapped in a thunk.</p>
   <p> This blog will be filled with things that I find interesting. At the
     moment, that's primarily functional programming and looking back at the work
     I did during my time as a student. </p>
-  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
-      alt="GitHub" height="100" width="100"
-      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
 </section>
 
   
