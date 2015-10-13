@@ -63,8 +63,8 @@ are faster.
 doesn't have a standard so the bytecode produced by different versions my very
 well be different*
 
-We can use the awesome `dis` module to get the bytecode so let's write a simple
-function that builds up the list and returns it
+We can use the awesome [dis](https://docs.python.org/2/library/dis.html) module
+to get the bytecode so let's write a simple function that builds up the list and returns it
 
 ```python
 def list_comp():
@@ -213,7 +213,7 @@ the iterator, we were able to begin getting elements from it and multiplying
 them by two and storing them in the list that would eventually be returned. Once
 the iterator is empty, all we do is return the list and we're done.
 
-## Dissection the Bytecode for the For Loop
+## Dissecting the Bytecode for For Loops
 Similar to what we did with the list comprehension, let's write an equivalent
 function but use the `for ... in` construct instead
 
@@ -266,7 +266,7 @@ go through it step-by-step.
 ```
 
 - `STORE_FAST` stores the value at the top of the stack at `co_varnames[0]`, in
-this case it's named xs
+this case it's named `xs`
 
 ```
 empty
@@ -402,11 +402,12 @@ Now let's time it
 
 ```
 $ python -m timeit -n 100000 "map(lambda x: x * 2, range(0, 100))"
-100000 loops, best of 3: 22.9 usec per loop
+100000 loops, best of 3: 23.9 usec per loop
 ```
 
-Ok, so using map takes longer than the list comprehension *and* the for loop
-version, let's get the bytecode and see what happens behind the scenes
+Ok, so using `map` takes longer than the list comprehension and is roughly
+equivalent to the for loop version, let's get the bytecode and see what
+happens behind the scenes
 
 ```
  0 LOAD_GLOBAL              0 (map)
