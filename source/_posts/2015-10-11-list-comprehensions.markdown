@@ -60,7 +60,7 @@ are faster.
 
 ## Dissecting the Bytecode for List Comprehensions
 *The following bytecode is produced by Python version 2.7.10. I know Python
-doesn't have a standard so the bytecode produced by different versions my very
+doesn't have a standard so the bytecode produced by different versions may very
 well be different*
 
 We can use the awesome [dis](https://docs.python.org/2/library/dis.html) module
