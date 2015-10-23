@@ -9,8 +9,8 @@
   <meta name="author" content="Vincent">
 
   
-  <meta name="description" content="One of the first things that could strike fear into anyone who wants to learn
-functional programming that comes from an imperative background is the &hellip;">
+  <meta name="description" content="The Initial Question A couple of years ago, a question was asked about list comprehensions on the
+Python Google+ Community. Unfortunately, the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,635 @@ functional programming that comes from an imperative background is the &hellip;"
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-10-11T16:07:08-05:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:07 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>The Initial Question</h2>
+
+<p>A couple of years ago, a question was asked about list comprehensions on the
+Python Google+ Community. Unfortunately, the question was deleted by the person
+who asked it, but it was essentially something along the lines of this</p>
+
+<blockquote>
+<p>Can someone explain list comprehensions to me? They look ugly and the syntax
+doesn&#39;t seem to be Pythonic</p>
+</blockquote>
+
+<p>Immediately, answers were posted that showed that this list comprehension</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>is equivalent to this loop</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Explanations were given that mentioned that the syntax for list
+comprehensions--while not immediately clear--is similar to
+<a href="https://en.wikipedia.org/wiki/Set-builder_notation">set-builder notation</a>
+in math.</p>
+
+<blockquote>
+<p>Ok, but why?</p>
+</blockquote>
+
+<p>This is when the execution time came up, using the <code>timeit</code> module, I found out
+that list comprehensions were actually faster.</p>
+
+<p>Comparing the two code snippets above, we get</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;[x * 2 for x in range(0, 100)]&quot;</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">11.9</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;xs = []&quot;</span> <span class="s">&quot;for x in range(0, 100): xs.append(x * 2)&quot;</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">23.5</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>After this, the conversation quickly devolved into people saying that if you
+really care about speed you shouldn&#39;t be using Python to begin with, Python is
+<em>so</em> slow, Python sucks because <code>_</code>, <em>ad infinitum</em></p>
+
+<p>I was really amazed that list comprehensions were faster and I always wanted to
+look deeper into them, but I was school in then, and I didn&#39;t have the time for
+it.</p>
+
+<p>But now I have the time, so let&#39;s see if we can find out <em>why</em> list comprehensions
+are faster.</p>
+
+<h2>Dissecting the Bytecode for List Comprehensions</h2>
+
+<p><em>The following bytecode is produced by Python version 2.7.10. I know Python
+doesn&#39;t have a standard so the bytecode produced by different versions may very
+well be different</em></p>
+
+<p>We can use the awesome <a href="https://docs.python.org/2/library/dis.html">dis</a> module
+to get the bytecode so let&#39;s write a simple function that builds up the list and returns it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">list_comp</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now we can call <code>dis.dis(list_comp)</code> and here&#39;s the annotated bytecode in all
+its glory.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>      <span class="mi">0</span> <span class="n">BUILD_LIST</span>               <span class="mi">0</span>            <span class="c"># pushes [] onto the stack</span>
+</span><span class='line'>      <span class="mi">3</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">0</span> <span class="p">(</span><span class="nb">range</span><span class="p">)</span>    <span class="c"># pushes `range` onto the stack</span>
+</span><span class='line'>      <span class="mi">6</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c"># pushes 0 onto the stack</span>
+</span><span class='line'>      <span class="mi">9</span> <span class="n">LOAD_CONST</span>               <span class="mi">2</span> <span class="p">(</span><span class="mi">100</span><span class="p">)</span>      <span class="c"># pushes 100 onto the stack</span>
+</span><span class='line'>     <span class="mi">12</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>            <span class="c"># calls `range(0, 100)`</span>
+</span><span class='line'>     <span class="mi">15</span> <span class="n">GET_ITER</span>                              <span class="c"># gets the iterator from the list</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">16</span> <span class="n">FOR_ITER</span>                 <span class="mi">16</span> <span class="p">(</span><span class="n">to</span> <span class="mi">35</span><span class="p">)</span>   <span class="c"># calls `next` on the iterator and pushes the value on the stack</span>
+</span><span class='line'>     <span class="mi">19</span> <span class="n">STORE_FAST</span>               <span class="mi">0</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>        <span class="c"># stores the element from the iterator at co_varnames[0]</span>
+</span><span class='line'>     <span class="mi">22</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>        <span class="c"># pushes co_varnames[0] onto the stack</span>
+</span><span class='line'>     <span class="mi">25</span> <span class="n">LOAD_CONST</span>               <span class="mi">3</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>        <span class="c"># loads 2 onto the stack</span>
+</span><span class='line'>     <span class="mi">28</span> <span class="n">BINARY_MULTIPLY</span>                       <span class="c"># multiplies the two top variables and stores it on the stack</span>
+</span><span class='line'>     <span class="mi">29</span> <span class="n">LIST_APPEND</span>              <span class="mi">2</span>            <span class="c"># appends the multiplied value to the list</span>
+</span><span class='line'>     <span class="mi">32</span> <span class="n">JUMP_ABSOLUTE</span>           <span class="mi">16</span>            <span class="c"># continues the iteration...</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">35</span> <span class="n">RETURN_VALUE</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now let&#39;s try to dissect it step-by-step and see if we can see how everything
+works. (You can see the documentation for all the bytecode operations
+<a href="https://docs.python.org/2/library/dis.html#python-bytecode-instructions">here</a>)</p>
+
+<ul>
+<li><code>BUILD_LIST</code> creates a new list with 0 elements and pushes it onto the stack. So
+the stack at the end of the call looks like this</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_GLOBAL</code> pushes the global function <code>range</code> onto the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">range</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 0 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 100 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">100</span>
+</span><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>CALL_FUNCTION 2</code> finally makes this ineresting. <code>CALL_FUNCTION</code> is used to
+actually call the <code>range</code> function. It uses the 0 and 100 from the stack as
+arguments for the <code>range</code> function. Finally, after the function has been called,
+it pushes the return value on the stack, so after calling the function, the
+stack looks like this.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">]</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>GET_ITER</code> implements <code>TOS = iter(TOS)</code>, where TOS stands for &quot;top of stack&quot;.
+So this operation takes the list returned by <code>range</code> and replaces it with an
+iterator object on the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now we begin the actual iteration part and we can start building the list</p>
+
+<ul>
+<li><code>FOR_ITER</code> calls the <code>next</code> method of the iterator that is currently on top of
+the stack and pushes that value on the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>STORE_FAST</code> stores the top of the stack value in <code>co_varnames[0]</code>--in a
+variable named <code>x</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_FAST</code> pushes a <em>reference</em> from <code>co_varnames</code> onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 2 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">2</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>BINARY_MULTIPLY</code> multiples the two uppermost elements on the stack and
+pushes the resulting value onto the stack. So in this case, it multiplies 2 with
+&amp;x where &amp;x is dereferenced from <code>co_varnames[0]</code>. From the <code>STORE_FAST</code>
+operation earlier, <code>co_varnames[0]</code> contains 0.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LIST_APPEND</code> is used for list comprehensions (surprise surprise!) and stores
+the topmost element on the stack in the list we created earlier with <code>BUILD_LIST</code>.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>JUMP_ABSOLUTE</code> jumps to the <code>FOR_ITER</code> call and we repeat until the iterator
+is exhausted. Once it&#39;s exhausted, we pop the iterator and return the list.</li>
+</ul>
+
+<p>Whew! that was quite the whirlwind, but aside from pushing values onto the stack
+to use them as arguments to certain function calls, all the operations are
+pretty straight-forward and we can see how it all comes together to build a new
+list. The first thing that was done was creating a list from the <code>range</code>
+function, once we had the list, we created an iterator from it and after we had
+the iterator, we were able to begin getting elements from it and multiplying
+them by two and storing them in the list that would eventually be returned. Once
+the iterator is empty, all we do is return the list and we&#39;re done.</p>
+
+<h2>Dissecting the Bytecode for For Loops</h2>
+
+<p>Similar to what we did with the list comprehension, let&#39;s write an equivalent
+function but use the <code>for ... in</code> construct instead</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">list_iter</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>And here&#39;s the annotated bytecode produced by <code>dis</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'>      <span class="mi">0</span> <span class="n">BUILD_LIST</span>               <span class="mi">0</span>          <span class="c"># pushes [] onto the stack</span>
+</span><span class='line'>      <span class="mi">3</span> <span class="n">STORE_FAST</span>               <span class="mi">0</span> <span class="p">(</span><span class="n">xs</span><span class="p">)</span>     <span class="c"># stores the list in co_varnames[0]</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="mi">6</span> <span class="n">SETUP_LOOP</span>              <span class="mi">40</span> <span class="p">(</span><span class="n">to</span> <span class="mi">49</span><span class="p">)</span>  <span class="c"># pushes the for loop onto the block stack</span>
+</span><span class='line'>      <span class="mi">9</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">0</span> <span class="p">(</span><span class="nb">range</span><span class="p">)</span>  <span class="c"># pushes `range` onto the stack</span>
+</span><span class='line'>     <span class="mi">12</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c"># pushes 0 onto the stack</span>
+</span><span class='line'>     <span class="mi">15</span> <span class="n">LOAD_CONST</span>               <span class="mi">2</span> <span class="p">(</span><span class="mi">100</span><span class="p">)</span>    <span class="c"># pushes 100 onto the stack</span>
+</span><span class='line'>     <span class="mi">18</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>          <span class="c"># calls `range(0, 100)`</span>
+</span><span class='line'>     <span class="mi">21</span> <span class="n">GET_ITER</span>                            <span class="c"># gets the iterator from the list</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">22</span> <span class="n">FOR_ITER</span>                <span class="mi">23</span> <span class="p">(</span><span class="n">to</span> <span class="mi">48</span><span class="p">)</span>  <span class="c"># calls `next` on the iterator and pushes the value on the stack</span>
+</span><span class='line'>     <span class="mi">25</span> <span class="n">STORE_FAST</span>               <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>      <span class="c"># stores the element from the iterator at co_varnames[1]</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="mi">28</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">xs</span><span class="p">)</span>     <span class="c"># pushes co_varnames[0] (xs) onto the stack</span>
+</span><span class='line'>     <span class="mi">31</span> <span class="n">LOAD_ATTR</span>                <span class="mi">1</span> <span class="p">(</span><span class="n">append</span><span class="p">)</span> <span class="c"># pushes the `append` function onto the stack</span>
+</span><span class='line'>     <span class="mi">34</span> <span class="n">LOAD_FAST</span>                <span class="mi">1</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span>      <span class="c"># pushes a reference from co_varnames[1] onto the stack</span>
+</span><span class='line'>     <span class="mi">37</span> <span class="n">LOAD_CONST</span>               <span class="mi">3</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>      <span class="c"># pushes 2 onto the stack</span>
+</span><span class='line'>     <span class="mi">40</span> <span class="n">BINARY_MULTIPLY</span>                     <span class="c"># multiplies the two top variables and stores the result on the stack</span>
+</span><span class='line'>     <span class="mi">41</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">1</span>          <span class="c"># calls `append` with xs and the result from the previous call</span>
+</span><span class='line'>     <span class="mi">44</span> <span class="n">POP_TOP</span>                             <span class="c"># pops xs from the stack</span>
+</span><span class='line'>     <span class="mi">45</span> <span class="n">JUMP_ABSOLUTE</span>           <span class="mi">22</span>          <span class="c"># continues the iteration...</span>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">48</span> <span class="n">POP_BLOCK</span>                           <span class="c"># pops the for block from the block stack</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;&gt;</span>   <span class="mi">49</span> <span class="n">LOAD_FAST</span>                <span class="mi">0</span> <span class="p">(</span><span class="n">xs</span><span class="p">)</span>     <span class="c"># pushes xs back onto the stack</span>
+</span><span class='line'>     <span class="mi">52</span> <span class="n">RETURN_VALUE</span>                        <span class="c"># returns the value at the top of the stack</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The bytecode is obviously longer and there&#39;s some new operations in there, but
+we can also see parts from the list comprehension bytecode. Nevertheless, let&#39;s
+go through it step-by-step.</p>
+
+<ul>
+<li><code>BUILD_LIST</code> creates a new list with 0 elements and pushes it onto the stack.</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>STORE_FAST</code> stores the value at the top of the stack at <code>co_varnames[0]</code>, in
+this case it&#39;s named <code>xs</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">empty</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>SETUP_LOOP</code> pushes a block of code onto the <em>block</em> stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">empty</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_GLOBAL</code> pushes the <code>range</code> function onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">range</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 0 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 100 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">100</span>
+</span><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">range</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>CALL_FUNCTION</code> calls <code>range(0, 100)</code> and pushes the resulting list onto the
+stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>GET_ITER</code> gets an iterator object from the list at the top of the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>FOR_ITER</code> calls <code>next</code> on the iterator object from the previous operation and
+stores it on the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>STORE_FAST</code> stores the value at the top of the stack at <code>co_varnames[1]</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_FAST</code> pushes a <em>reference</em> of <code>xs</code> onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&amp;</span><span class="n">xs</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_ATTR</code> replaces the top value of the stack with an attribute function. In
+this case <code>xs.append</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_FAST</code> pushes a reference to <code>x</code> onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>LOAD_CONST</code> pushes 2 onto the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">2</span>
+</span><span class='line'><span class="o">&amp;</span><span class="n">x</span>
+</span><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>BINARY_MULTIPLY</code> multiplies 2 and 0 and stores it on the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="mi">0</span>
+</span><span class='line'><span class="n">xs</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>CALL_FUNCTION</code> calls <code>xs.append(0)</code>, pops 0 from the stack, and pushes the
+return value onto the stack--in this case <code>None</code></li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">None</span>
+</span><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>POP_TOP</code> simply pops the top element from the stack</li>
+</ul>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">iter</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">99</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<ul>
+<li><code>JUMP_ABSOLUTE</code> goes back to the <code>FOR_ITER</code> operation and begins the whole
+thing again</li>
+</ul>
+
+<p>This makes the list comprehension&#39;s bytecode pale in comparision, and after
+going through the bytecode, we can see that the this version has to do many
+more things such as pushing the for block onto the block stack, pushing <code>xs</code>
+onto the stack just to load the list attribute <code>append</code>, and popping <code>None</code> from
+the stack after the call to <code>append</code>.</p>
+
+<h2>Using Map</h2>
+
+<p>Maybe having to push <code>xs</code> onto the stack and popping it off the stack in the for
+loop version is the reason why it takes double the time as the list
+comprehension, so for completeness, let&#39;s look at one more way to build up a
+list: using <code>map</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now let&#39;s time it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100000</span> <span class="s">&quot;map(lambda x: x * 2, range(0, 100))&quot;</span>
+</span><span class='line'><span class="mi">100000</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">23.9</span> <span class="n">usec</span> <span class="n">per</span> <span class="n">loop</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Ok, so using <code>map</code> takes longer than the list comprehension and is roughly
+equivalent to the for loop version, let&#39;s get the bytecode and see what
+happens behind the scenes</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'> <span class="mi">0</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">0</span> <span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+</span><span class='line'> <span class="mi">3</span> <span class="n">LOAD_CONST</span>               <span class="mi">1</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">code</span> <span class="nb">object</span> <span class="o">&lt;</span><span class="k">lambda</span><span class="o">&gt;</span> <span class="n">at</span> <span class="mh">0x104ff16b0</span><span class="p">,</span> <span class="nb">file</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">)</span>
+</span><span class='line'> <span class="mi">6</span> <span class="n">MAKE_FUNCTION</span>            <span class="mi">0</span>
+</span><span class='line'> <span class="mi">9</span> <span class="n">LOAD_GLOBAL</span>              <span class="mi">1</span> <span class="p">(</span><span class="nb">range</span><span class="p">)</span>
+</span><span class='line'><span class="mi">12</span> <span class="n">LOAD_CONST</span>               <span class="mi">2</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="mi">15</span> <span class="n">LOAD_CONST</span>               <span class="mi">3</span> <span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</span><span class='line'><span class="mi">18</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>
+</span><span class='line'><span class="mi">21</span> <span class="n">CALL_FUNCTION</span>            <span class="mi">2</span>
+</span><span class='line'><span class="mi">24</span> <span class="n">RETURN_VALUE</span>
+</span></code></pre></td></tr></table></div></figure>
+
+<p>The bytecode is actually <em>shorter</em> than any other version, so that makes the
+hypothesis that the number of operations affects the run time and more
+operations means more time false and untenable.</p>
+
+<h2>Conclusion</h2>
+
+<p>I&#39;m not claiming to be a master of Python bytecode at all, but after dissecting
+three different ways to build up a list, I suspect the <code>LIST_APPEND</code> operation
+to be the reason behind the list comprehension being faster than the other
+versions. By using <code>LIST_APPEND</code> the list comprehension avoids calling
+<code>LOAD_ATTR</code> and <code>CALL_FUNCTION</code> like the for loop. The full documentation for
+<code>LIST_APPEND</code> is</p>
+
+<blockquote>
+<p>Calls <code>list.append(TOS[-i], TOS)</code>. <strong>Used to implement list comprehensions.</strong>
+While the appended value is popped off, the list object remains on the stack
+so that it is available for further iterations of the loop.
+(emphasis added)</p>
+</blockquote>
+
+<p>Which leads me to think that <code>LIST_APPEND</code> is an optimization used to make list
+comprehensions faster.</p>
+
+<p>All of these thoughts come with an asterisk of course. I have no idea if this is
+the reason why list comprehensions are faster, but I definitely suspect
+<code>LIST_APPEND</code> to be at least part of the reason.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1428,6 +2057,10 @@ the list remains wrapped in a thunk.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/04/the-hof-of-hof/">The HOF of HOF</a>
       </li>
     
@@ -1480,9 +2113,6 @@ the list remains wrapped in a thunk.</p>
   <p> This blog will be filled with things that I find interesting. At the
     moment, that's primarily functional programming and looking back at the work
     I did during my time as a student. </p>
-  <p align="center"><a href="http://www.github.com/vandrada"><img border="0"
-      alt="GitHub" height="100" width="100"
-      src="http://www.cs.columbia.edu/~stratos/images/github.png"></a>
 </section>
 
   
