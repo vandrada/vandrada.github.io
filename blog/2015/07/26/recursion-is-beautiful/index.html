@@ -55,6 +55,7 @@ solves some problems really well, it&#39;s often elegant and &hellip;">
 </form>
   
 <ul class="main-navigation">
+  <li><a href="https://github.com/vandrada">GitHub</a></li>
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
 </ul>
@@ -737,6 +738,10 @@ language that is ugly and not recursion itself.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/11/14/finally-dot-dot-dot/">Finally...</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/10/11/list-comprehensions/">List Comprehensions</a>
       </li>
     
@@ -755,44 +760,17 @@ language that is ugly and not recursion itself.</p>
   </ul>
 </section>
 
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a href="https://github.com/vandrada">@vandrada</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'vandrada',
-            count: 0,
-            skip_forks: false,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
 
 
 <section>
   <h1>About Me</h1>
-  <p> I'm Vincent, a recent graduate from <a href="http://www.utsa.edu">UTSA</a>.</p>
+  <p> I'm Vincent, a recent graduate from <a href="http://www.utsa.edu">UTSA</a>
+  and a Software Engineer at
+  <a href="http://www.icsolutions.com/">IC Solutions</a></p>
   <p> This blog will be filled with things that I find interesting. At the
-    moment, that's primarily functional programming and looking back at the work
-    I did during my time as a student. </p>
+    moment, that's primarily functional programming, looking back at the work
+    I did during my time as a student, and interesting things that come up at
+    work.
 </section>
 
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Common Code]]></title>
   <link href="http://vandrada.github.io/atom.xml" rel="self"/>
   <link href="http://vandrada.github.io/"/>
-  <updated>2015-10-23T17:10:39-05:00</updated>
+  <updated>2015-11-24T15:06:22-06:00</updated>
   <id>http://vandrada.github.io/</id>
   <author>
     <name><![CDATA[Vincent]]></name>
@@ -12,6 +12,26 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Finally...]]></title>
+    <link href="http://vandrada.github.io/blog/2015/11/14/finally-dot-dot-dot/"/>
+    <updated>2015-11-14T17:08:10-06:00</updated>
+    <id>http://vandrada.github.io/blog/2015/11/14/finally-dot-dot-dot</id>
+    <content type="html"><![CDATA[<p>Finally, to paraphrase <a href="https://youtu.be/ceq7Vk-_B-M">Barbosa</a>, <strong>I am job!</strong></p>
+
+<p>I&#39;ve already singed the Offer Letter and I&#39;m just waiting for my background
+check to clear. After it does, I&#39;ll finally be a Software Engineer.</p>
+
+<p>I don&#39;t know all the details of the job just yet, but I do know that I&#39;m going
+to be primarily--exclusively?--writing in C...which is both scary and exciting.
+In school, most of my classes encouraged us to write in C, but all of my big
+projects were in Java or Python. I never had the chance to write anything
+reasonably complex in C, and now I&#39;ll be diving in head first.</p>
+
+<p>Which just might be the best way to go about it.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[List Comprehensions]]></title>
